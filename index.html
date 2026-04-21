@@ -125,8 +125,6 @@ radial-gradient(circle at 100% 20%, rgba(216,109,255,0.08), transparent 25%);
   margin:0 auto 12px auto;
   text-transform:uppercase;
   text-align:center;
-  background:linear-gradient(90deg, var(--turq-2) 0%, #c1f6ff 18%, #a9b3ff 42%, var(--pink) 70%, var(--turq-2) 100%);
-  background-size:200% auto;
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
@@ -159,31 +157,95 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 width:100%;
+margin:0 auto 26px auto;
+}
+
+.logo{
+width:120px;
+height:auto;
+display:block;
+margin:0 auto 18px auto;
+border-radius:0;
+background:none;
+box-shadow:none;
+object-fit:contain;
+}
+
+.title{
+font-size:52px;
+font-weight:900;
+letter-spacing:4px;
+margin:8px auto 14px auto;
+text-transform:uppercase;
+text-align:center;
+line-height:1;
+color:#e8fcff;
+text-shadow:
+0 0 6px rgba(103,239,255,0.35),
+0 0 14px rgba(103,239,255,0.22),
+0 0 22px rgba(141,92,255,0.14);
+animation:kipPulse 2.4s ease-in-out infinite;
+}
+
+.subtitle{
+position:relative;
+max-width:340px;
 margin:0 auto;
+padding:14px 18px;
+border-radius:18px;
+font-size:15px;
+font-weight:700;
+line-height:1.35;
+text-align:center;
+color:#e5fbff;
+background:linear-gradient(90deg, rgba(16,40,72,0.72), rgba(43,23,76,0.62));
+border:1px solid rgba(103,239,255,0.18);
+box-shadow:
+0 0 12px rgba(103,239,255,0.10),
+0 0 24px rgba(141,92,255,0.10),
+inset 0 0 18px rgba(255,255,255,0.02);
+overflow:hidden;
+backdrop-filter:blur(8px);
+animation:subtitlePulse 3.2s ease-in-out infinite;
 }
 
 .subtitle::before{
 content:"";
 position:absolute;
 inset:0;
-background:linear-gradient(120deg, transparent 10%, rgba(103,239,255,.18) 45%, transparent 75%);
+background:linear-gradient(120deg, transparent 10%, rgba(103,239,255,0.14) 45%, transparent 75%);
 transform:translateX(-120%);
 animation:subtitleSweep 4s linear infinite;
 }
 
-@keyframes kipFlow{
-0%{background-position:0% center;}
-100%{background-position:220% center;}
+@keyframes kipPulse{
+0%,100%{
+text-shadow:
+0 0 6px rgba(103,239,255,0.30),
+0 0 14px rgba(103,239,255,0.18),
+0 0 22px rgba(141,92,255,0.10);
 }
-
-@keyframes kipGlow{
-0%,100%{filter:drop-shadow(0 0 8px rgba(103,239,255,.22)) drop-shadow(0 0 14px rgba(216,109,255,.18));}
-50%{filter:drop-shadow(0 0 14px rgba(103,239,255,.42)) drop-shadow(0 0 22px rgba(216,109,255,.30));}
+50%{
+text-shadow:
+0 0 8px rgba(103,239,255,0.45),
+0 0 18px rgba(103,239,255,0.28),
+0 0 28px rgba(141,92,255,0.16);
+}
 }
 
 @keyframes subtitlePulse{
-0%,100%{box-shadow:0 0 14px rgba(103,239,255,.08),0 0 24px rgba(216,109,255,.08);}
-50%{box-shadow:0 0 18px rgba(103,239,255,.14),0 0 30px rgba(216,109,255,.14);}
+0%,100%{
+box-shadow:
+0 0 12px rgba(103,239,255,0.10),
+0 0 24px rgba(141,92,255,0.10),
+inset 0 0 18px rgba(255,255,255,0.02);
+}
+50%{
+box-shadow:
+0 0 18px rgba(103,239,255,0.16),
+0 0 30px rgba(141,92,255,0.14),
+inset 0 0 18px rgba(255,255,255,0.03);
+}
 }
 
 @keyframes subtitleSweep{
@@ -374,6 +436,7 @@ opacity:0.58;
 <div class="hero-brand">
   <img src="3dgifmaker01858.gif" alt="KIP Logo" class="logo">
   <div class="title">KIP</div>
+  <div class="subtitle">Community Hub pentru LIVE, B-Zone, donații și social media</div>
 </div>
     
 <div class="subtitle">Community Hub pentru LIVE, B-Zone, donații și social media</div>
