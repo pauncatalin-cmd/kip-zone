@@ -1,617 +1,547 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KIP Merch Shop</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIP Merch Shop</title>
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(0, 140, 255, 0.16), transparent 22%),
-        radial-gradient(circle at 85% 18%, rgba(0, 80, 255, 0.14), transparent 24%),
-        radial-gradient(circle at 50% 85%, rgba(0, 170, 255, 0.10), transparent 28%),
-        linear-gradient(180deg, #07111f 0%, #040912 100%);
-      color: #fff;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 40px 20px;
-    }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(0,140,255,0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(0,191,255,0.12), transparent 35%),
+    linear-gradient(180deg, #06111f, #020713);
+  color: #fff;
+  padding: 30px 18px;
+}
 
-    .shop-container {
-      width: 100%;
-      max-width: 1200px;
-      background: rgba(9, 18, 36, 0.88);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      box-shadow:
-        0 20px 60px rgba(0,0,0,0.45),
-        inset 0 0 30px rgba(0, 140, 255, 0.03);
-      backdrop-filter: blur(14px);
-      overflow: hidden;
-    }
+.shop {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: rgba(9,18,36,0.92);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 20px 70px rgba(0,0,0,0.45);
+}
 
-    .hero {
-      padding: 50px 24px 30px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(0, 153, 255, 0.14), transparent 45%);
-    }
+.hero {
+  text-align: center;
+  padding: 45px 20px 35px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
 
-    .logo {
-      width: 130px;
-      max-width: 45vw;
-      height: auto;
-      display: block;
-      margin: 0 auto 18px;
-      filter: drop-shadow(0 0 18px rgba(0, 153, 255, 0.35));
-    }
+.logo {
+  width: 105px;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 0 18px rgba(0,191,255,0.35));
+}
 
-    .title {
-      font-size: clamp(2rem, 5vw, 3.6rem);
-      font-weight: 900;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #ffffff, #7fd8ff, #ffffff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  color: #9ee4ff;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
 
-    .subtitle {
-      font-size: 1rem;
-      color: #c7d8f6;
-      max-width: 700px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
+.hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #cbdcf8;
+  line-height: 1.6;
+}
 
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 24px 20px 10px;
-    }
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 24px 20px;
+}
 
-    .nav-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 22px;
-      border-radius: 16px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.98rem;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      transition: 0.25s ease;
-    }
+.nav a {
+  text-decoration: none;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 15px;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+}
 
-    .nav-btn:hover {
-      transform: translateY(-2px);
-      background: rgba(255,255,255,0.08);
-    }
+.nav a.primary {
+  background: linear-gradient(135deg, #0d6efd, #00bfff);
+  box-shadow: 0 0 20px rgba(0,191,255,0.35);
+}
 
-    .nav-btn.primary {
-      background: linear-gradient(135deg, #0d6efd, #00bfff);
-      box-shadow: 0 0 18px rgba(0, 140, 255, 0.35);
-    }
+.product-section {
+  padding: 30px 24px 50px;
+}
 
-    .content {
-      padding: 30px 20px 40px;
-    }
+.product-title-top {
+  text-align: center;
+  margin-bottom: 28px;
+}
 
-    .section-title {
-      text-align: center;
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
+.product-title-top h2 {
+  font-size: 1.7rem;
+  margin-bottom: 8px;
+}
 
-    .section-subtitle {
-      text-align: center;
-      color: #aac5f7;
-      margin-bottom: 30px;
-      font-size: 0.96rem;
-    }
+.product-title-top p {
+  color: #aac5f7;
+}
 
-    .product-gallery {
-      max-width: 720px;
-      margin: 0 auto 30px;
-      text-align: center;
-      cursor: pointer;
-    }
+.product-card {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 34px;
+  align-items: start;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 26px;
+  padding: 24px;
+}
 
-    .main-photo {
-      width: 100%;
-      max-height: 620px;
-      object-fit: contain;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      transition: 0.25s ease;
-      cursor: zoom-in;
-    }
+.gallery {
+  width: 100%;
+}
 
-    .main-photo:hover {
-      transform: scale(1.01);
-    }
+.main-image-wrap {
+  background: #eef1f5;
+  border-radius: 22px;
+  overflow: hidden;
+  cursor: zoom-in;
+}
 
-    .thumbs {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
+.main-image {
+  width: 100%;
+  display: block;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
 
-    .thumbs img {
-      width: 82px;
-      height: 82px;
-      object-fit: cover;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.12);
-      transition: 0.2s ease;
-    }
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
 
-    .thumbs img:hover {
-      transform: scale(1.06);
-      border-color: #00bfff;
-    }
+.thumbs img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.14);
+  transition: 0.2s ease;
+}
 
-    .click-hint {
-      margin-top: 12px;
-      color: #7fd8ff;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
+.thumbs img:hover,
+.thumbs img.active {
+  border-color: #00bfff;
+  transform: scale(1.03);
+}
 
-    .product-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.82);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 9999;
-    }
+.details {
+  padding: 8px 4px;
+}
 
-    .product-modal.active {
-      display: flex;
-    }
+.badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,191,255,0.12);
+  border: 1px solid rgba(0,191,255,0.28);
+  color: #7fd8ff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
 
-    .modal-box {
-      width: 100%;
-      max-width: 1000px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: rgba(9, 18, 36, 0.98);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 24px;
-      position: relative;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-    }
+.details h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  margin-bottom: 12px;
+}
 
-    .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 42px;
-      height: 42px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
+.price {
+  font-size: 1.6rem;
+  color: #7fd8ff;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
 
-    .modal-close:hover {
-      background: rgba(255,255,255,0.16);
-    }
+.short-desc {
+  color: #d7e5ff;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
 
-    .modal-photo {
-      width: 100%;
-      max-height: 560px;
-      object-fit: contain;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 16px;
-    }
+.highlights {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 22px;
+}
 
-    .modal-thumbs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
+.highlights div {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #e7f1ff;
+}
 
-    .modal-thumbs img {
-      width: 76px;
-      height: 76px;
-      object-fit: cover;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.12);
-      transition: 0.2s ease;
-    }
+.buy-box {
+  margin: 18px 0 24px;
+}
 
-    .modal-thumbs img:hover {
-      transform: scale(1.05);
-      border-color: #00bfff;
-    }
+.full-details {
+  margin-top: 20px;
+  color: #d7e5ff;
+  line-height: 1.7;
+}
 
-    .modal-details {
-      text-align: left;
-      color: #d7e5ff;
-      line-height: 1.7;
-      font-size: 0.98rem;
-    }
+.full-details h3 {
+  color: #7fd8ff;
+  margin: 20px 0 10px;
+  font-size: 1.25rem;
+}
 
-    .modal-details h2 {
-      font-size: 2rem;
-      margin-bottom: 18px;
-      color: #fff;
-    }
+.full-details p {
+  margin-bottom: 13px;
+}
 
-    .modal-details h3 {
-      font-size: 1.2rem;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      color: #7fd8ff;
-    }
+.full-details ul {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
 
-    .modal-details p {
-      margin-bottom: 14px;
-    }
+.full-details li {
+  margin-bottom: 6px;
+}
 
-    .modal-details ul {
-      padding-left: 20px;
-      margin-bottom: 14px;
-    }
+.info-box {
+  margin-top: 28px;
+  padding: 20px;
+  text-align: center;
+  color: #d7e5ff;
+  line-height: 1.7;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
-    .modal-details li {
-      margin-bottom: 6px;
-    }
+.footer {
+  text-align: center;
+  padding: 18px;
+  color: #8fa9d9;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+}
 
-    #product-component-1777287226840 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 220px;
-    }
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.86);
+  z-index: 9999;
+  padding: 20px;
+}
 
-    .info-box {
-      margin-top: 35px;
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-      color: #d7e5ff;
-      line-height: 1.7;
-      font-size: 0.95rem;
-    }
+.modal.active {
+  display: flex;
+}
 
-    .footer {
-      text-align: center;
-      padding: 18px;
-      color: #8fa9d9;
-      font-size: 0.85rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02);
-    }
+.modal img {
+  max-width: 95vw;
+  max-height: 90vh;
+  border-radius: 20px;
+}
 
-    @media (max-width: 768px) {
-      body {
-        padding: 20px 12px;
-      }
+.close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-size: 36px;
+  color: #fff;
+  cursor: pointer;
+}
 
-      .hero {
-        padding: 36px 16px 24px;
-      }
+@media (max-width: 900px) {
+  .product-card {
+    grid-template-columns: 1fr;
+  }
 
-      .content {
-        padding: 24px 14px 30px;
-      }
+  .thumbs {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
 
-      .modal-box {
-        padding: 18px;
-      }
+@media (max-width: 520px) {
+  body {
+    padding: 14px;
+  }
 
-      .modal-details h2 {
-        font-size: 1.5rem;
-      }
+  .product-card {
+    padding: 16px;
+  }
 
-      .thumbs img,
-      .modal-thumbs img {
-        width: 68px;
-        height: 68px;
-      }
-    }
-  </style>
+  .nav a {
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>
 </head>
+
 <body>
-  <div class="shop-container">
-    <div class="hero">
-      <img class="logo" src="https://kip-zone.info/logokip.png" alt="KIP Logo">
-      <h1 class="title">KIP Merch Shop</h1>
-      <p class="subtitle">
-        Merch oficial KIP. Susține comunitatea și poartă stilul KIP în live, pe stradă și oriunde vrei să reprezinți brandul.
-      </p>
-    </div>
 
-    <div class="actions">
-      <a class="nav-btn" href="index.html">⬅ Înapoi la KIP Hub</a>
-      <a class="nav-btn primary" href="https://discord.gg/9CwwfAAPdB" target="_blank">💬 Discord KIP Community</a>
-    </div>
+<div class="shop">
 
-    <div class="content">
-      <div class="section-title">Produs disponibil acum</div>
-      <div class="section-subtitle">Apasă pe produs pentru poze și detalii, cumpără din butonul de mai jos</div>
+  <section class="hero">
+    <img class="logo" src="logokip.png" alt="KIP Logo">
+    <h1>KIP Merch Shop</h1>
+    <p>Merch oficial KIP. Susține comunitatea și poartă stilul KIP în live, pe stradă și oriunde vrei să reprezinți brandul.</p>
+  </section>
 
-      <div class="product-gallery" onclick="openProductModal()">
-        <img class="main-photo" id="mainPhoto" src="images/sapca-1.png" alt="KIP Classic White Cap">
-
-        <div class="thumbs" onclick="event.stopPropagation()">
-          <img src="images/sapca-1.png" onclick="changePhoto(this.src)">
-          <img src="images/sapca-2.png" onclick="changePhoto(this.src)">
-          <img src="images/sapca-3.png" onclick="changePhoto(this.src)">
-          <img src="images/sapca-4.png" onclick="changePhoto(this.src)">
-          <img src="images/sapca-5.png" onclick="changePhoto(this.src)">
-        </div>
-
-        <div class="click-hint">Apasă pe produs pentru poze și detalii</div>
-      </div>
-
-      <div id="productModal" class="product-modal" onclick="closeProductModal()">
-        <div class="modal-box" onclick="event.stopPropagation()">
-          <button class="modal-close" onclick="closeProductModal()">×</button>
-
-          <img class="modal-photo" id="modalPhoto" src="images/sapca-1.png" alt="KIP Classic White Cap">
-
-          <div class="modal-thumbs">
-            <img src="images/sapca-1.png" onclick="changeModalPhoto(this.src)">
-            <img src="images/sapca-2.png" onclick="changeModalPhoto(this.src)">
-            <img src="images/sapca-3.png" onclick="changeModalPhoto(this.src)">
-            <img src="images/sapca-4.png" onclick="changeModalPhoto(this.src)">
-            <img src="images/sapca-5.png" onclick="changeModalPhoto(this.src)">
-          </div>
-
-          <div class="modal-details">
-            <h2>KIP Classic White Cap</h2>
-
-            <p>KIP Classic White Cap este prima piesă oficială din colecția KIP Merch.</p>
-
-            <p>Un model clean, premium și ușor de purtat zilnic, creat pentru comunitatea KIP și pentru cei care vor un look simplu, puternic și recognoscibil.</p>
-
-            <p>Șapca albă vine cu broderie frontală KIP în negru, într-un stil minimalist care se potrivește perfect atât în outfit-uri casual, cât și în live-uri, stream-uri sau purtare de zi cu zi. La spate, detaliul brodat REF 13 completează designul și oferă un plus de identitate primului drop oficial KIP.</p>
-
-            <p>Este produsul signature din primul drop KIP și una dintre cele mai reprezentative piese ale brandului.</p>
-
-            <ul>
-              <li>Design clean și premium</li>
-              <li>Broderie frontală KIP</li>
-              <li>Broderie spate REF 13</li>
-              <li>Ușor de asortat</li>
-              <li>Perfectă pentru daily wear</li>
-              <li>Creată pentru comunitatea KIP</li>
-            </ul>
-
-            <h3>Detalii produs</h3>
-
-            <ul>
-              <li>100% bumbac chino twill</li>
-              <li>Model tip dad hat, confortabil și ușor de purtat</li>
-              <li>Construcție nestructurată, 6 panouri</li>
-              <li>Profil jos</li>
-              <li>6 orificii brodate pentru ventilație</li>
-              <li>Înălțime coroană: 7,6 cm</li>
-              <li>Curea reglabilă cu cataramă metalică</li>
-              <li>Produs de bază provenit din Vietnam sau Bangladesh</li>
-            </ul>
-
-            <p>KIP Classic White Cap este o piesă esențială din identitatea KIP, simplă, curată și făcută să reprezinte brandul exact cum trebuie.</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="product-component-1777287226840"></div>
-
-      <div class="info-box">
-        Livrare directă prin Shopify.<br>
-        Plată securizată la checkout.<br>
-        Vor urma și alte produse KIP, șepci, tricouri, hoodie și ediții speciale.
-      </div>
-    </div>
-
-    <div class="footer">
-      © 2026 KIP Merch. Toate drepturile rezervate.
-    </div>
+  <div class="nav">
+    <a href="index.html">← Înapoi la KIP Hub</a>
+    <a class="primary" href="https://discord.gg/9CwwfAAPdB" target="_blank">💬 Discord KIP Community</a>
   </div>
 
-  <script>
-    function changePhoto(src) {
-      document.getElementById("mainPhoto").src = src;
-      document.getElementById("modalPhoto").src = src;
-    }
+  <section class="product-section">
 
-    function changeModalPhoto(src) {
-      document.getElementById("modalPhoto").src = src;
-      document.getElementById("mainPhoto").src = src;
-    }
+    <div class="product-title-top">
+      <h2>Produs disponibil acum</h2>
+      <p>Galerie foto, detalii produs și comandă directă prin Shopify</p>
+    </div>
 
-    function openProductModal() {
-      document.getElementById("productModal").classList.add("active");
-    }
+    <div class="product-card">
 
-    function closeProductModal() {
-      document.getElementById("productModal").classList.remove("active");
-    }
+      <div class="gallery">
+        <div class="main-image-wrap" onclick="openModal()">
+          <img id="mainImage" class="main-image" src="sapca-1.png.png" alt="KIP Classic White Cap">
+        </div>
 
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") {
-        closeProductModal();
-      }
+        <div class="thumbs">
+          <img class="active" src="sapca-1.png.png" onclick="changeImage(this)">
+          <img src="sapca-2.png.png" onclick="changeImage(this)">
+          <img src="sapca-3.png.png" onclick="changeImage(this)">
+          <img src="sapca-4.png.png" onclick="changeImage(this)">
+          <img src="sapca-5.png.png" onclick="changeImage(this)">
+        </div>
+      </div>
+
+      <div class="details">
+        <span class="badge">Official Drop #1</span>
+
+        <h2>KIP Classic White Cap</h2>
+
+        <div class="price">€19,00</div>
+
+        <p class="short-desc">
+          Prima piesă oficială din colecția KIP Merch. O șapcă albă, clean și ușor de purtat zilnic, cu broderie frontală KIP și detaliu REF 13 la spate.
+        </p>
+
+        <div class="highlights">
+          <div>✔ Design clean și premium</div>
+          <div>✔ Broderie frontală KIP</div>
+          <div>✔ Broderie spate REF 13</div>
+          <div>✔ Creată pentru comunitatea KIP</div>
+        </div>
+
+        <div class="buy-box">
+          <div id="product-component-1777287226840"></div>
+        </div>
+
+        <div class="full-details">
+          <h3>Descriere produs</h3>
+
+          <p>KIP Classic White Cap este prima piesă oficială din colecția KIP Merch.</p>
+
+          <p>Un model clean, premium și ușor de purtat zilnic, creat pentru comunitatea KIP și pentru cei care vor un look simplu, puternic și recognoscibil.</p>
+
+          <p>Șapca albă vine cu broderie frontală KIP în negru, într-un stil minimalist care se potrivește perfect atât în outfit-uri casual, cât și în live-uri, stream-uri sau purtare de zi cu zi. La spate, detaliul brodat REF 13 completează designul și oferă un plus de identitate primului drop oficial KIP.</p>
+
+          <h3>Detalii produs</h3>
+
+          <ul>
+            <li>100% bumbac chino twill</li>
+            <li>Model tip dad hat, confortabil și ușor de purtat</li>
+            <li>Construcție nestructurată, 6 panouri</li>
+            <li>Profil jos</li>
+            <li>6 orificii brodate pentru ventilație</li>
+            <li>Înălțime coroană: 7,6 cm</li>
+            <li>Curea reglabilă cu cataramă metalică</li>
+            <li>Produs de bază provenit din Vietnam sau Bangladesh</li>
+          </ul>
+
+          <p>KIP Classic White Cap este o piesă esențială din identitatea KIP, simplă, curată și făcută să reprezinte brandul exact cum trebuie.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-box">
+      Livrare directă prin Shopify.<br>
+      Plată securizată la checkout.<br>
+      Vor urma și alte produse KIP, șepci, tricouri, hoodie și ediții speciale.
+    </div>
+
+  </section>
+
+  <div class="footer">
+    © 2026 KIP Merch. Toate drepturile rezervate.
+  </div>
+
+</div>
+
+<div id="imageModal" class="modal" onclick="closeModal()">
+  <span class="close">×</span>
+  <img id="modalImage" src="sapca-1.png.png" alt="KIP Classic White Cap">
+</div>
+
+<script>
+function changeImage(el) {
+  const mainImage = document.getElementById("mainImage");
+  const modalImage = document.getElementById("modalImage");
+
+  mainImage.src = el.src;
+  modalImage.src = el.src;
+
+  document.querySelectorAll(".thumbs img").forEach(img => img.classList.remove("active"));
+  el.classList.add("active");
+}
+
+function openModal() {
+  document.getElementById("imageModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("imageModal").classList.remove("active");
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeModal();
+});
+</script>
+
+<script type="text/javascript">
+(function () {
+  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+
+  if (window.ShopifyBuy) {
+    if (window.ShopifyBuy.UI) {
+      ShopifyBuyInit();
+    } else {
+      loadScript();
+    }
+  } else {
+    loadScript();
+  }
+
+  function loadScript() {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    document.head.appendChild(script);
+    script.onload = ShopifyBuyInit;
+  }
+
+  function ShopifyBuyInit() {
+    var client = ShopifyBuy.buildClient({
+      domain: 'h0dnu0-nq.myshopify.com',
+      storefrontAccessToken: 'dd43c2d1cd261017613070f32f54712c',
     });
-  </script>
 
-  <script type="text/javascript">
-    (function () {
-      var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-      if (window.ShopifyBuy) {
-        if (window.ShopifyBuy.UI) {
-          ShopifyBuyInit();
-        } else {
-          loadScript();
-        }
-      } else {
-        loadScript();
-      }
-
-      function loadScript() {
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = scriptURL;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-        script.onload = ShopifyBuyInit;
-      }
-
-      function ShopifyBuyInit() {
-        var client = ShopifyBuy.buildClient({
-          domain: 'h0dnu0-nq.myshopify.com',
-          storefrontAccessToken: 'dd43c2d1cd261017613070f32f54712c',
-        });
-
-        ShopifyBuy.UI.onReady(client).then(function (ui) {
-          ui.createComponent('product', {
-            id: '15557785059676',
-            node: document.getElementById('product-component-1777287226840'),
-            moneyFormat: '%E2%82%AC%7B%7Bamount_with_comma_separator%7D%7D',
-            options: {
-              "product": {
-                "contents": {
-                  "img": false,
-                  "imgWithCarousel": false,
-                  "title": true,
-                  "price": true,
-                  "description": false,
-                  "button": true,
-                  "quantity": false
+    ShopifyBuy.UI.onReady(client).then(function (ui) {
+      ui.createComponent('product', {
+        id: '15557785059676',
+        node: document.getElementById('product-component-1777287226840'),
+        moneyFormat: '%E2%82%AC%7B%7Bamount_with_comma_separator%7D%7D',
+        options: {
+          product: {
+            contents: {
+              img: false,
+              title: false,
+              price: false,
+              description: false,
+              quantity: false,
+              button: true
+            },
+            styles: {
+              product: {
+                "text-align": "left",
+                "margin": "0"
+              },
+              button: {
+                "background-color": "#0d6efd",
+                "border-radius": "14px",
+                "padding": "16px 28px",
+                "font-size": "16px",
+                "font-weight": "800",
+                ":hover": {
+                  "background-color": "#00aaff"
                 },
-                "styles": {
-                  "product": {
-                    "background-color": "transparent",
-                    "padding": "20px",
-                    "border-radius": "20px",
-                    "border": "1px solid rgba(255,255,255,0.08)",
-                    "@media (min-width: 601px)": {
-                      "max-width": "100%",
-                      "margin-left": "0",
-                      "margin-bottom": "0"
-                    }
-                  },
-                  "title": {
-                    "color": "#ffffff",
-                    "font-size": "26px",
-                    "font-weight": "800"
-                  },
-                  "price": {
-                    "color": "#7fd8ff",
-                    "font-size": "20px",
-                    "font-weight": "700"
-                  },
-                  "button": {
-                    "background-color": "#0d6efd",
-                    ":hover": {
-                      "background-color": "#009dff"
-                    },
-                    ":focus": {
-                      "background-color": "#009dff"
-                    },
-                    "border-radius": "12px",
-                    "padding": "16px 24px",
-                    "font-weight": "700"
-                  }
-                },
-                "text": {
-                  "button": "Cumpără acum"
-                }
-              },
-              "productSet": {
-                "styles": {
-                  "products": {
-                    "@media (min-width: 601px)": {
-                      "margin-left": "0"
-                    }
-                  }
-                }
-              },
-              "modalProduct": {
-                "contents": {
-                  "img": false,
-                  "imgWithCarousel": false,
-                  "button": false,
-                  "buttonWithQuantity": false
-                }
-              },
-              "cart": {
-                "styles": {
-                  "button": {
-                    "background-color": "#0d6efd",
-                    ":hover": {
-                      "background-color": "#009dff"
-                    },
-                    ":focus": {
-                      "background-color": "#009dff"
-                    },
-                    "border-radius": "12px"
-                  }
-                },
-                "text": {
-                  "total": "Subtotal",
-                  "button": "Finalizează comanda"
-                }
-              },
-              "toggle": {
-                "styles": {
-                  "toggle": {
-                    "background-color": "#0d6efd",
-                    ":hover": {
-                      "background-color": "#009dff"
-                    },
-                    ":focus": {
-                      "background-color": "#009dff"
-                    }
-                  }
+                ":focus": {
+                  "background-color": "#00aaff"
                 }
               }
             },
-          });
-        });
-      }
-    })();
-  </script>
+            text: {
+              button: "Cumpără acum"
+            }
+          },
+          cart: {
+            styles: {
+              button: {
+                "background-color": "#0d6efd",
+                "border-radius": "14px",
+                "font-weight": "800",
+                ":hover": {
+                  "background-color": "#00aaff"
+                },
+                ":focus": {
+                  "background-color": "#00aaff"
+                }
+              }
+            },
+            text: {
+              total: "Subtotal",
+              button: "Finalizează comanda"
+            }
+          },
+          toggle: {
+            styles: {
+              toggle: {
+                "background-color": "#0d6efd",
+                ":hover": {
+                  "background-color": "#00aaff"
+                },
+                ":focus": {
+                  "background-color": "#00aaff"
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
