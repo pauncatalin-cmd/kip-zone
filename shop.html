@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIP Merch Shop</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0, 140, 255, 0.16), transparent 22%),
+        radial-gradient(circle at 85% 18%, rgba(0, 80, 255, 0.14), transparent 24%),
+        radial-gradient(circle at 50% 85%, rgba(0, 170, 255, 0.10), transparent 28%),
+        linear-gradient(180deg, #07111f 0%, #040912 100%);
+      color: #fff;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .shop-container {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(9, 18, 36, 0.88);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.45),
+        inset 0 0 30px rgba(0, 140, 255, 0.03);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 50px 24px 30px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(0, 153, 255, 0.14), transparent 45%);
+    }
+
+    .logo {
+      width: 130px;
+      max-width: 45vw;
+      height: auto;
+      display: block;
+      margin: 0 auto 18px;
+      filter: drop-shadow(0 0 18px rgba(0, 153, 255, 0.35));
+    }
+
+    .title {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #ffffff, #7fd8ff, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #c7d8f6;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 24px 20px 10px;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      transition: 0.25s ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-btn.primary {
+      background: linear-gradient(135deg, #0d6efd, #00bfff);
+      box-shadow: 0 0 18px rgba(0, 140, 255, 0.35);
+    }
+
+    .content {
+      padding: 30px 20px 40px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #aac5f7;
+      margin-bottom: 30px;
+      font-size: 0.96rem;
+    }
+
+    #product-component-1777287226840 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+    }
+
+    .info-box {
+      margin-top: 35px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      color: #d7e5ff;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 18px;
+      color: #8fa9d9;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 12px;
+      }
+
+      .hero {
+        padding: 36px 16px 24px;
+      }
+
+      .content {
+        padding: 24px 14px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shop-container">
+    <div class="hero">
+      <img class="logo" src="https://kip-zone.info/logo.png" alt="KIP Logo">
+      <h1 class="title">KIP Merch Shop</h1>
+      <p class="subtitle">
+        Merch oficial KIP. Susține comunitatea și poartă stilul KIP în live, pe stradă și oriunde vrei să reprezinți brandul.
+      </p>
+    </div>
+
+    <div class="actions">
+      <a class="nav-btn" href="index.html">⬅ Înapoi la KIP Hub</a>
+      <a class="nav-btn primary" href="https://discord.gg/9CwwfAAPdB" target="_blank">💬 Discord KIP Community</a>
+    </div>
+
+    <div class="content">
+      <div class="section-title">Produs disponibil acum</div>
+      <div class="section-subtitle">Comandă direct din shop, rapid și simplu</div>
+
+      <div id='product-component-1777287226840'></div>
+
+      <div class="info-box">
+        Livrare directă prin Shopify.<br>
+        Plată securizată la checkout.<br>
+        Vor urma și alte produse KIP, șepci, tricouri, hoodie și ediții speciale.
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2026 KIP Merch. Toate drepturile rezervate.
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    (function () {
+      var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+      if (window.ShopifyBuy) {
+        if (window.ShopifyBuy.UI) {
+          ShopifyBuyInit();
+        } else {
+          loadScript();
+        }
+      } else {
+        loadScript();
+      }
+
+      function loadScript() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = scriptURL;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+        script.onload = ShopifyBuyInit;
+      }
+
+      function ShopifyBuyInit() {
+        var client = ShopifyBuy.buildClient({
+          domain: 'h0dnu0-nq.myshopify.com',
+          storefrontAccessToken: 'dd43c2d1cd261017613070f32f54712c',
+        });
+
+        ShopifyBuy.UI.onReady(client).then(function (ui) {
+          ui.createComponent('product', {
+            id: '15557785059676',
+            node: document.getElementById('product-component-1777287226840'),
+            moneyFormat: '%E2%82%AC%7B%7Bamount_with_comma_separator%7D%7D',
+            options: {
+              "product": {
+                "styles": {
+                  "product": {
+                    "background-color": "transparent",
+                    "padding": "20px",
+                    "border-radius": "20px",
+                    "border": "1px solid rgba(255,255,255,0.08)",
+                    "@media (min-width: 601px)": {
+                      "max-width": "100%",
+                      "margin-left": "0",
+                      "margin-bottom": "0"
+                    }
+                  },
+                  "title": {
+                    "color": "#ffffff",
+                    "font-size": "26px",
+                    "font-weight": "800"
+                  },
+                  "price": {
+                    "color": "#7fd8ff",
+                    "font-size": "20px",
+                    "font-weight": "700"
+                  },
+                  "compareAt": {
+                    "color": "#8fa9d9"
+                  },
+                  "description": {
+                    "color": "#d7e5ff",
+                    "font-size": "15px",
+                    "line-height": "1.6"
+                  },
+                  "button": {
+                    "background-color": "#0d6efd",
+                    ":hover": {
+                      "background-color": "#009dff"
+                    },
+                    ":focus": {
+                      "background-color": "#009dff"
+                    },
+                    "border-radius": "12px",
+                    "padding": "16px 24px",
+                    "font-weight": "700"
+                  }
+                },
+                "text": {
+                  "button": "Cumpără acum"
+                }
+              },
+              "productSet": {
+                "styles": {
+                  "products": {
+                    "@media (min-width: 601px)": {
+                      "margin-left": "0"
+                    }
+                  }
+                }
+              },
+              "modalProduct": {
+                "contents": {
+                  "img": false,
+                  "imgWithCarousel": true,
+                  "button": false,
+                  "buttonWithQuantity": true
+                },
+                "styles": {
+                  "product": {
+                    "@media (min-width: 601px)": {
+                      "max-width": "100%",
+                      "margin-left": "0px",
+                      "margin-bottom": "0px"
+                    }
+                  },
+                  "button": {
+                    "background-color": "#0d6efd",
+                    ":hover": {
+                      "background-color": "#009dff"
+                    },
+                    ":focus": {
+                      "background-color": "#009dff"
+                    },
+                    "border-radius": "12px"
+                  }
+                },
+                "text": {
+                  "button": "Adaugă în coș"
+                }
+              },
+              "cart": {
+                "styles": {
+                  "button": {
+                    "background-color": "#0d6efd",
+                    ":hover": {
+                      "background-color": "#009dff"
+                    },
+                    ":focus": {
+                      "background-color": "#009dff"
+                    },
+                    "border-radius": "12px"
+                  }
+                },
+                "text": {
+                  "total": "Subtotal",
+                  "button": "Finalizează comanda"
+                }
+              },
+              "toggle": {
+                "styles": {
+                  "toggle": {
+                    "background-color": "#0d6efd",
+                    ":hover": {
+                      "background-color": "#009dff"
+                    },
+                    ":focus": {
+                      "background-color": "#009dff"
+                    }
+                  }
+                }
+              }
+            },
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
