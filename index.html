@@ -66,6 +66,31 @@ background:radial-gradient(circle, rgba(216,109,255,.22) 0%, rgba(216,109,255,0)
 animation:orbFloat2 12s ease-in-out infinite;
 }
 
+  .merch-button {
+  position: relative;
+  background: linear-gradient(135deg, #0d6efd, #00bfff);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 0 18px rgba(0, 140, 255, 0.35);
+  overflow: hidden;
+}
+
+.merch-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: skewX(-25deg);
+  animation: merchShine 3s infinite;
+}
+
+@keyframes merchShine {
+  0% { left: -120%; }
+  100% { left: 160%; }
+}
+
 @keyframes bgmove{
 0%{background-position:0% 0%,100% 0%,50% 100%,0% 0%;}
 50%{background-position:18% 10%,86% 14%,54% 86%,0% 100%;}
@@ -446,6 +471,11 @@ opacity:0.58;
 <span class="icon">🔑</span>
 <span class="button-text center-text">REFERRAL 13</span>
 </div>
+
+<a class="button merch-button" href="shop.html">
+  <span class="icon">🧢</span>
+  <span class="button-text">KIP Merch SHOP</span>
+</a>
 
 <a class="button" href="https://www.tipeeestream.com/kipanu/donation" target="_blank">
 <span class="icon">💙</span>
