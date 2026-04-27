@@ -204,6 +204,10 @@ body {
   margin: 18px 0 24px;
 }
 
+#product-component-1777295239804 {
+  width: fit-content;
+}
+
 .full-details {
   margin-top: 20px;
   color: #d7e5ff;
@@ -349,25 +353,99 @@ body {
 
         <h2>KIP Classic White Cap</h2>
 
-        <div class="price">€19,00</div>
+        <div class="price">€19,50</div>
 
         <p class="short-desc">
           Prima piesă oficială din colecția KIP Merch. O șapcă albă, clean și ușor de purtat zilnic, cu broderie frontală KIP și detaliu REF 13 la spate.
         </p>
 
         <div class="highlights">
-          <div>✔ Design clean și premium</div>
-          <div>✔ Broderie frontală KIP</div>
-          <div>✔ Broderie spate REF 13</div>
-          <div>✔ Creată pentru comunitatea KIP</div>
+          <div>✓ Design clean și premium</div>
+          <div>✓ Broderie frontală KIP</div>
+          <div>✓ Broderie spate REF 13</div>
+          <div>✓ Creată pentru comunitatea KIP</div>
         </div>
 
         <div class="buy-box">
-          <div id='product-component-1777295239804'></div>
+          <div id="product-component-1777295239804"></div>
+        </div>
+
+        <div class="full-details">
+          <h3>Descriere produs</h3>
+
+          <p>KIP Classic White Cap este prima piesă oficială din colecția KIP Merch.</p>
+
+          <p>Un model clean, premium și ușor de purtat zilnic, creat pentru comunitatea KIP și pentru cei care vor un look simplu, puternic și recognoscibil.</p>
+
+          <p>Șapca albă vine cu broderie frontală KIP în negru, într-un stil minimalist care se potrivește perfect atât în outfit-uri casual, cât și în live-uri, stream-uri sau purtare de zi cu zi. La spate, detaliul brodat REF 13 completează designul și oferă un plus de identitate primului drop oficial KIP.</p>
+
+          <h3>Detalii produs</h3>
+
+          <ul>
+            <li>100% bumbac chino twill</li>
+            <li>Model tip dad hat, confortabil și ușor de purtat</li>
+            <li>Construcție nestructurată, 6 panouri</li>
+            <li>Profil jos</li>
+            <li>6 orificii brodate pentru ventilație</li>
+            <li>Înălțime coroană: 7,6 cm</li>
+            <li>Curea reglabilă cu cataramă metalică</li>
+            <li>Produs de bază provenit din Vietnam sau Bangladesh</li>
+          </ul>
+
+          <p>KIP Classic White Cap este o piesă esențială din identitatea KIP, simplă, curată și făcută să reprezinte brandul exact cum trebuie.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-box">
+      Livrare directă prin Shopify.<br>
+      Plată securizată la checkout.<br>
+      Vor urma și alte produse KIP, șepci, tricouri, hoodie și ediții speciale.
+    </div>
+
+  </section>
+
+  <div class="footer">
+    © 2026 KIP Merch. Toate drepturile rezervate.
+  </div>
+
+</div>
+
+<div id="imageModal" class="modal" onclick="closeModal()">
+  <span class="close">×</span>
+  <img id="modalImage" src="sapca-1.png.png" alt="KIP Classic White Cap">
+</div>
+
+<script>
+function changeImage(el) {
+  const mainImage = document.getElementById("mainImage");
+  const modalImage = document.getElementById("modalImage");
+
+  mainImage.src = el.src;
+  modalImage.src = el.src;
+
+  document.querySelectorAll(".thumbs img").forEach(img => img.classList.remove("active"));
+  el.classList.add("active");
+}
+
+function openModal() {
+  document.getElementById("imageModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("imageModal").classList.remove("active");
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeModal();
+});
+</script>
+
 <script type="text/javascript">
-/*<![CDATA[*/
 (function () {
-  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+  var scriptURL = "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js";
+
   if (window.ShopifyBuy) {
     if (window.ShopifyBuy.UI) {
       ShopifyBuyInit();
@@ -377,129 +455,105 @@ body {
   } else {
     loadScript();
   }
+
   function loadScript() {
-    var script = document.createElement('script');
+    var script = document.createElement("script");
     script.async = true;
     script.src = scriptURL;
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+    document.head.appendChild(script);
     script.onload = ShopifyBuyInit;
   }
+
   function ShopifyBuyInit() {
     var client = ShopifyBuy.buildClient({
-      domain: 'h0dnu0-nq.myshopify.com',
-      storefrontAccessToken: 'dd43c2d1cd261017613070f32f54712c',
+      domain: "h0dnu0-nq.myshopify.com",
+      storefrontAccessToken: "dd43c2d1cd261017613070f32f54712c",
     });
+
     ShopifyBuy.UI.onReady(client).then(function (ui) {
-      ui.createComponent('product', {
-        id: '15557963415900',
-        node: document.getElementById('product-component-1777295239804'),
-        moneyFormat: '%E2%82%AC%7B%7Bamount_with_comma_separator%7D%7D',
+      ui.createComponent("product", {
+        id: "15557963415900",
+        node: document.getElementById("product-component-1777295239804"),
+        moneyFormat: "%E2%82%AC%7B%7Bamount_with_comma_separator%7D%7D",
         options: {
-  "product": {
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "calc(25% - 20px)",
-          "margin-left": "20px",
-          "margin-bottom": "50px"
+          product: {
+            contents: {
+              img: false,
+              imgWithCarousel: false,
+              title: false,
+              price: false,
+              description: false,
+              quantity: false,
+              button: true
+            },
+            buttonDestination: "cart",
+            styles: {
+              product: {
+                "text-align": "left",
+                "margin": "0",
+                "max-width": "none",
+                "width": "auto"
+              },
+              button: {
+                "background-color": "#0d6efd",
+                "border-radius": "14px",
+                "padding": "16px 28px",
+                "font-size": "16px",
+                "font-weight": "800",
+                "box-shadow": "0 0 18px rgba(0,140,255,0.35)",
+                ":hover": {
+                  "background-color": "#00aaff"
+                },
+                ":focus": {
+                  "background-color": "#00aaff"
+                }
+              }
+            },
+            text: {
+              button: "Cumpără acum"
+            }
+          },
+          cart: {
+            popup: false,
+            styles: {
+              button: {
+                "background-color": "#0d6efd",
+                "border-radius": "14px",
+                "font-weight": "800",
+                ":hover": {
+                  "background-color": "#00aaff"
+                },
+                ":focus": {
+                  "background-color": "#00aaff"
+                }
+              }
+            },
+            text: {
+              title: "Coș KIP",
+              total: "Subtotal",
+              empty: "Coșul tău este gol.",
+              notice: "Livrarea și codurile de reducere se aplică în pagina de checkout.",
+              button: "Finalizează comanda"
+            }
+          },
+          toggle: {
+            styles: {
+              toggle: {
+                "background-color": "#0d6efd",
+                ":hover": {
+                  "background-color": "#00aaff"
+                },
+                ":focus": {
+                  "background-color": "#00aaff"
+                }
+              }
+            }
+          }
         }
-      },
-      "button": {
-        ":hover": {
-          "background-color": "#8970e6"
-        },
-        "background-color": "#987cff",
-        ":focus": {
-          "background-color": "#8970e6"
-        },
-        "border-radius": "2px"
-      }
-    },
-    "buttonDestination": "checkout",
-    "text": {
-      "button": "Buy now"
-    }
-  },
-  "productSet": {
-    "styles": {
-      "products": {
-        "@media (min-width: 601px)": {
-          "margin-left": "-20px"
-        }
-      }
-    }
-  },
-  "modalProduct": {
-    "contents": {
-      "img": false,
-      "imgWithCarousel": true,
-      "button": false,
-      "buttonWithQuantity": true
-    },
-    "styles": {
-      "product": {
-        "@media (min-width: 601px)": {
-          "max-width": "100%",
-          "margin-left": "0px",
-          "margin-bottom": "0px"
-        }
-      },
-      "button": {
-        ":hover": {
-          "background-color": "#8970e6"
-        },
-        "background-color": "#987cff",
-        ":focus": {
-          "background-color": "#8970e6"
-        },
-        "border-radius": "2px"
-      }
-    },
-    "text": {
-      "button": "Add to cart"
-    }
-  },
-  "option": {},
-  "cart": {
-    "styles": {
-      "button": {
-        ":hover": {
-          "background-color": "#8970e6"
-        },
-        "background-color": "#987cff",
-        ":focus": {
-          "background-color": "#8970e6"
-        },
-        "border-radius": "2px"
-      }
-    },
-    "text": {
-      "title": "Coșul tău",
-      "total": "Subtotal",
-      "empty": "Coșul tău este gol.",
-      "notice": "Costul de livrare și eventualele coduri de reducere se aplică la checkout.",
-      "button": "Finalizează comanda"
-    }
-  },
-  "toggle": {
-    "styles": {
-      "toggle": {
-        "background-color": "#987cff",
-        ":hover": {
-          "background-color": "#8970e6"
-        },
-        ":focus": {
-          "background-color": "#8970e6"
-        }
-      }
-    }
-  }
-},
       });
     });
   }
 })();
-/*]]>*/
 </script>
 
 </body>
