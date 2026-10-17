@@ -1,0 +1,7 @@
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function selectTab(tab){for(const item of tabs){const active=item===tab;item.setAttribute('aria-selected',String(active));item.tabIndex=active?0:-1;document.getElementById(item.getAttribute('aria-controls')).hidden=!active;}}
+tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>selectTab(tab));tab.addEventListener('keydown',event=>{const next=event.key==='ArrowRight'?(index+1)%tabs.length:event.key==='ArrowLeft'?(index+tabs.length-1)%tabs.length:event.key==='Home'?0:event.key==='End'?tabs.length-1:null;if(next!==null){event.preventDefault();selectTab(tabs[next]);tabs[next].focus();}});});
+const menu=document.querySelector('.menu-toggle'),navigation=document.querySelector('#navigation');
+menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));navigation.classList.toggle('open',open);});
+navigation.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{menu.setAttribute('aria-expanded','false');navigation.classList.remove('open');}));
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const container=document.querySelector('.particles');for(let i=0;i<24;i++){const p=document.createElement('i');p.style.cssText=`--x:${Math.random()*100}%;--delay:${-Math.random()*16}s;--duration:${10+Math.random()*12}s;--size:${1+Math.random()*2}px`;container.appendChild(p);}}
