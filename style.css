@@ -15,3 +15,7 @@
 @media(max-width:680px){.ticker{width:calc(100% - 40px)}}
 
 .nav-studio{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 17px;background:linear-gradient(110deg,#ffe790,#ffd34f 60%,#e7ac25);border:1px solid #ffe49c;color:#141107;font-size:10px;font-weight:800;letter-spacing:.8px;box-shadow:0 0 20px #ffd34f18}.navlinks .nav-studio:hover{color:#080a0b;box-shadow:0 0 26px #ffd34f40}.navlinks{gap:23px}@media(min-width:681px) and (max-width:1000px){.navlinks{gap:12px}.nav-studio{padding:12px 10px;font-size:9px}.navlinks>a:not(.nav-studio):not(.nav-cta){font-size:11px}.nav-cta{padding:12px 10px;font-size:9px}}@media(max-width:680px){.nav-studio{min-height:46px}.navlinks{gap:20px}}
+
+/* Preserve the full emblem on desktop and mobile. */
+.portrait-frame{display:grid;place-items:center;mask-image:none;overflow:visible}
+.portrait-frame img{width:85%;height:85%;object-fit:contain;object-position:center;mix-blend-mode:normal;mask-image:none}
