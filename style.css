@@ -164,6 +164,31 @@ button:focus-visible {
   line-height: 1.35;
 }
 
+.audience {
+  margin: 7px 0 0;
+  color: #b7bdb8;
+  font-size: 12.5px;
+  line-height: 1.25;
+  letter-spacing: 0.1px;
+}
+
+.audience[hidden] { display: none; }
+
+.audience-total {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.audience-break {
+  display: none;
+  margin-top: 3px;
+  color: #aeb6af;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.audience-break:empty { display: none; }
+
 .link-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -424,6 +449,18 @@ button:focus-visible {
     margin-top: clamp(6px, 0.8vh, 12px);
   }
 
+  .audience {
+    margin-top: clamp(4px, 0.7vh, 8px);
+    font-size: clamp(13px, 1.55vh, 18px);
+  }
+
+  .audience-break {
+    display: block;
+    margin-top: clamp(2px, 0.4vh, 6px);
+    font-size: clamp(12px, 1.35vh, 15px);
+    white-space: nowrap;
+  }
+
   .link-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: clamp(10px, 1.4vh, 18px);
@@ -469,6 +506,11 @@ button:focus-visible {
   .identity-copy h1 { font-size: 40px; }
   .landing-inner { gap: 12px; padding-block: 12px; }
   .tagline { margin-top: 4px; }
+  .audience { margin-top: 4px; }
+}
+
+@media (max-height: 780px) {
+  .audience-break { display: none; }
 }
 
 @media (max-width: 680px) {

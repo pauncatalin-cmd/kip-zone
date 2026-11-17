@@ -18,6 +18,40 @@
     });
   });
 
+  var audience = document.getElementById("audience");
+  if (audience) {
+    fetch("/api/followers", { headers: { Accept: "application/json" } })
+      .then(function (response) {
+        if (!response.ok) return null;
+        return response.json();
+      })
+      .then(function (data) {
+        if (!data || typeof data.display !== "string" || !data.display) return;
+        if (typeof data.total !== "number" || !(data.total > 0)) return;
+        if (!Array.isArray(data.platforms) || !data.platforms.length) return;
+        var total = audience.querySelector(".audience-total");
+        var detail = audience.querySelector(".audience-break");
+        if (!total) return;
+        var bits = [];
+        data.platforms.forEach(function (item) {
+          if (!item || typeof item.label !== "string" || typeof item.count !== "number" || !(item.count > 0)) return;
+          var formatted = typeof item.formatted === "string" && item.formatted
+            ? item.formatted
+            : new Intl.NumberFormat("ro-RO").format(Math.round(item.count));
+          bits.push(item.label + " " + formatted);
+        });
+        if (!bits.length) return;
+        total.textContent = data.display;
+        var summary = bits.join(" · ");
+        if (detail) detail.textContent = summary;
+        audience.title = summary;
+        audience.hidden = false;
+      })
+      .catch(function () {
+        /* Leave the follower line hidden. */
+      });
+  }
+
   var kick = document.querySelector('[data-track="kick"]');
   if (!kick) return;
 
