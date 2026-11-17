@@ -204,6 +204,61 @@ button:focus-visible {
 
 .btn:active { transform: translateY(1px); }
 
+.btn { position: relative; }
+
+.live-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px 1px 4px;
+  border-radius: 999px;
+  background: #ff2d2d;
+  color: #fff;
+  font: 800 9px/1 "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.live-badge[hidden] { display: none; }
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 0 #ffffffbf;
+  animation: live-pulse 1.4s ease-out infinite;
+}
+
+.btn.is-live {
+  border-color: #ff3b3b;
+  background: #2a1010e6;
+  box-shadow: 0 0 0 1px #ff3b3b55, 0 0 14px #ff2a2a66;
+  animation: live-glow 1.6s ease-in-out infinite;
+}
+
+.btn.is-live:hover {
+  border-color: #ff5a5a;
+  background: #ff2a2a24;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .fineprint {
   margin: 0;
   text-align: center;
@@ -388,6 +443,19 @@ button:focus-visible {
     height: clamp(22px, min(3.2vh, 2.2vw), 36px);
   }
 
+  .live-badge {
+    top: 8px;
+    right: 8px;
+    gap: 5px;
+    padding: 3px 7px 2px 5px;
+    font-size: clamp(10px, 1.35vh, 13px);
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+  }
+
   .fineprint { font-size: clamp(12px, 1.45vh, 16px); }
 }
 
@@ -417,4 +485,13 @@ button:focus-visible {
 
 @keyframes beam {
   to { opacity: 0.25; }
+}
+
+@keyframes live-pulse {
+  70% { box-shadow: 0 0 0 6px #ffffff00; }
+  100% { box-shadow: 0 0 0 0 #ffffff00; }
+}
+
+@keyframes live-glow {
+  50% { box-shadow: 0 0 0 1px #ff5a5a88, 0 0 18px #ff2a2aaa; }
 }
