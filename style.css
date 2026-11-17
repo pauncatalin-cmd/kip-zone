@@ -177,14 +177,16 @@ button:focus-visible {
 .audience-total {
   color: var(--gold);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .audience-break {
-  display: none;
+  display: block;
   margin-top: 3px;
   color: #aeb6af;
   font-size: 11px;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 .audience-break:empty { display: none; }
@@ -507,10 +509,6 @@ button:focus-visible {
   .landing-inner { gap: 12px; padding-block: 12px; }
   .tagline { margin-top: 4px; }
   .audience { margin-top: 4px; }
-}
-
-@media (max-height: 780px) {
-  .audience-break { display: none; }
 }
 
 @media (max-width: 680px) {

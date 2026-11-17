@@ -3,8 +3,14 @@ const http = require("http");
 const { URL } = require("url");
 const fallbackConfig = require("../followers.config.json");
 
-const CACHE_MS = 60 * 60 * 1000;
 const TIMEOUT_MS = 5000;
+const MINUTE = 60 * 1000;
+const PLATFORM_TTL_MS = {
+  kick: MINUTE,
+  discord: MINUTE,
+  tiktok: 5 * MINUTE,
+  youtube: 5 * MINUTE,
+};
 const MAX_BYTES = 1600000;
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -16,7 +22,8 @@ const PLATFORMS = [
   { id: "discord", label: "Discord" },
 ];
 
-let responseCache = { expires: 0, body: null };
+const platformCache = {};
+let inflight = null;
 
 function finiteInt(value) {
   if (typeof value === "string" && value.trim() !== "") value = Number(value);
@@ -28,11 +35,6 @@ function finiteInt(value) {
 
 function formatRo(value) {
   return new Intl.NumberFormat("ro-RO").format(value);
-}
-
-function headline(total) {
-  if (total >= 1000) return formatRo(Math.floor(total / 100) * 100) + "+";
-  return formatRo(total);
 }
 
 function fallbackCount(id) {
@@ -233,6 +235,7 @@ const LOADERS = {
 };
 
 function platformResult(platform, result) {
+  const ttl = PLATFORM_TTL_MS[platform.id] / 1000;
   if (result) {
     return {
       id: platform.id,
@@ -241,6 +244,7 @@ function platformResult(platform, result) {
       formatted: formatRo(result.count),
       source: "live",
       via: result.via,
+      ttl,
     };
   }
   const count = fallbackCount(platform.id);
@@ -252,23 +256,30 @@ function platformResult(platform, result) {
     formatted: formatRo(count),
     source: "fallback",
     via: "snapshot",
+    ttl,
   };
 }
 
-async function loadFollowers(env) {
-  const runtimeEnv = env || process.env;
-  const settled = await Promise.all(
-    PLATFORMS.map(async (platform) => {
-      try {
-        return await LOADERS[platform.id](runtimeEnv);
-      } catch (error) {
-        return null;
-      }
-    })
-  );
-  const platforms = PLATFORMS.map((platform, index) => platformResult(platform, settled[index])).filter(Boolean);
+async function loadOne(platform, env) {
+  const now = Date.now();
+  const cached = platformCache[platform.id];
+  if (cached && cached.expires > now) return cached.value;
+  try {
+    const value = await LOADERS[platform.id](env);
+    platformCache[platform.id] = { expires: now + PLATFORM_TTL_MS[platform.id], value };
+    return value;
+  } catch (error) {
+    if (cached && cached.value) {
+      platformCache[platform.id] = { expires: now + MINUTE, value: cached.value };
+      return cached.value;
+    }
+    return null;
+  }
+}
+
+function payloadFrom(platforms) {
   const total = platforms.reduce((sum, platform) => sum + platform.count, 0);
-  const display = total > 0 ? headline(total) : "";
+  const display = total > 0 ? formatRo(total) : "";
   return {
     total,
     display,
@@ -277,30 +288,30 @@ async function loadFollowers(env) {
   };
 }
 
+async function loadFollowers(env) {
+  const runtimeEnv = env || process.env;
+  const settled = await Promise.all(PLATFORMS.map((platform) => loadOne(platform, runtimeEnv)));
+  const platforms = PLATFORMS.map((platform, index) => platformResult(platform, settled[index])).filter(Boolean);
+  return payloadFrom(platforms);
+}
+
+function send(res, body, cacheControl) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", cacheControl);
+  res.status(200).json(body);
+}
+
 async function handler(req, res) {
   try {
-    const now = Date.now();
-    if (!responseCache.body || responseCache.expires <= now) {
-      responseCache = {
-        expires: now + CACHE_MS,
-        body: await loadFollowers(),
-      };
+    if (!inflight) {
+      inflight = loadFollowers().finally(() => {
+        inflight = null;
+      });
     }
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400");
-    res.status(200).json(responseCache.body);
+    send(res, await inflight, "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
   } catch (error) {
     const platforms = PLATFORMS.map((platform) => platformResult(platform, null)).filter(Boolean);
-    const total = platforms.reduce((sum, platform) => sum + platform.count, 0);
-    const display = total > 0 ? headline(total) : "";
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=300, stale-while-revalidate=3600");
-    res.status(200).json({
-      total,
-      display,
-      text: display ? display + " urmăritori pe toate platformele" : "",
-      platforms,
-    });
+    send(res, payloadFrom(platforms), "public, max-age=0, s-maxage=30, stale-while-revalidate=60");
   }
 }
 
@@ -311,8 +322,10 @@ module.exports.parseDiscord = parseDiscord;
 module.exports.parseYouTube = parseYouTube;
 module.exports.parseYouTubeApi = parseYouTubeApi;
 module.exports.parseTikTok = parseTikTok;
-module.exports.headline = headline;
 module.exports.formatRo = formatRo;
+module.exports.PLATFORM_TTL_MS = PLATFORM_TTL_MS;
+module.exports._platformCache = platformCache;
 module.exports._resetCache = function resetCache() {
-  responseCache = { expires: 0, body: null };
+  inflight = null;
+  for (const id of Object.keys(platformCache)) delete platformCache[id];
 };
