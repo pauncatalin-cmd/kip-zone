@@ -18,6 +18,73 @@
     });
   });
 
+  var audience = document.getElementById("audience");
+  if (audience) {
+    var totalEl = audience.querySelector(".audience-total");
+    var shown = null;
+    var frame = 0;
+    var FOLLOW_MS = 60000;
+    var numberFormat = new Intl.NumberFormat("ro-RO");
+
+    function formatCount(value) {
+      return numberFormat.format(Math.round(value));
+    }
+
+    function paintTotal(value) {
+      shown = Math.round(value);
+      if (totalEl) totalEl.textContent = formatCount(shown);
+    }
+
+    function animateTotal(next) {
+      next = Math.round(next);
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (shown == null || shown === next || reduce) {
+        paintTotal(next);
+        return;
+      }
+      var from = shown;
+      var start = performance.now();
+      var duration = 700;
+      cancelAnimationFrame(frame);
+      function step(now) {
+        var t = Math.min(1, (now - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        paintTotal(from + (next - from) * eased);
+        if (t < 1) frame = requestAnimationFrame(step);
+        else paintTotal(next);
+      }
+      frame = requestAnimationFrame(step);
+    }
+
+    function applyFollowers(data) {
+      if (!data || typeof data.total !== "number" || !(data.total > 0) || !totalEl) return;
+      audience.removeAttribute("title");
+      animateTotal(data.total);
+      audience.hidden = false;
+    }
+
+    function pullFollowers() {
+      if (document.hidden) return;
+      fetch("/api/followers", { headers: { Accept: "application/json" }, cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) return null;
+          return response.json();
+        })
+        .then(function (data) {
+          if (data) applyFollowers(data);
+        })
+        .catch(function () {
+          /* Leave the last follower line in place. */
+        });
+    }
+
+    pullFollowers();
+    setInterval(pullFollowers, FOLLOW_MS);
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) pullFollowers();
+    });
+  }
+
   var kick = document.querySelector('[data-track="kick"]');
   if (!kick) return;
 
