@@ -180,17 +180,6 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-.audience-break {
-  display: block;
-  margin-top: 3px;
-  color: #aeb6af;
-  font-size: 11px;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-
-.audience-break:empty { display: none; }
-
 .link-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -454,13 +443,6 @@ button:focus-visible {
   .audience {
     margin-top: clamp(4px, 0.7vh, 8px);
     font-size: clamp(13px, 1.55vh, 18px);
-  }
-
-  .audience-break {
-    display: block;
-    margin-top: clamp(2px, 0.4vh, 6px);
-    font-size: clamp(12px, 1.35vh, 15px);
-    white-space: nowrap;
   }
 
   .link-grid {

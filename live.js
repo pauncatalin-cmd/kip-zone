@@ -21,7 +21,6 @@
   var audience = document.getElementById("audience");
   if (audience) {
     var totalEl = audience.querySelector(".audience-total");
-    var detailEl = audience.querySelector(".audience-break");
     var shown = null;
     var frame = 0;
     var FOLLOW_MS = 60000;
@@ -58,20 +57,8 @@
     }
 
     function applyFollowers(data) {
-      if (!data || typeof data.total !== "number" || !(data.total > 0)) return;
-      if (!Array.isArray(data.platforms) || !data.platforms.length || !totalEl) return;
-      var bits = [];
-      data.platforms.forEach(function (item) {
-        if (!item || typeof item.label !== "string" || typeof item.count !== "number" || !(item.count > 0)) return;
-        var formatted = typeof item.formatted === "string" && item.formatted
-          ? item.formatted
-          : formatCount(item.count);
-        bits.push(item.label + " " + formatted);
-      });
-      if (!bits.length) return;
-      var summary = bits.join(" · ");
-      if (detailEl) detailEl.textContent = summary;
-      audience.title = summary;
+      if (!data || typeof data.total !== "number" || !(data.total > 0) || !totalEl) return;
+      audience.removeAttribute("title");
       animateTotal(data.total);
       audience.hidden = false;
     }
