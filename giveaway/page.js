@@ -66,12 +66,10 @@
 
   function renderPhase(stats) {
     if (!phaseEl) return;
+    const phase = window.GiveawayDraw && window.GiveawayDraw.campaignPhase(stats, Date.now());
+    if (phase === "ended" || phase === "closed") return;
     if (!stats || stats.configured === false) {
       phaseEl.textContent = "Evidența nu este configurată.";
-      return;
-    }
-    if (stats.revealed) {
-      phaseEl.textContent = "Extragerea a fost făcută. Rezultatul este pe pagina de extragere.";
       return;
     }
     if (stats.frozen) {
@@ -88,6 +86,78 @@
       return;
     }
     phaseEl.textContent = "Înscrierile sunt închise.";
+  }
+
+  function addSpec(parent, term, value) {
+    const row = document.createElement("div");
+    row.className = "spec";
+    const dt = document.createElement("dt");
+    dt.textContent = term;
+    const dd = document.createElement("dd");
+    dd.textContent = value;
+    row.append(dt, dd);
+    parent.append(row);
+  }
+
+  function renderCampaignState(phase, result, verifyHref) {
+    const box = document.getElementById("gw-status");
+    const title = document.getElementById("gw-status-title");
+    const note = document.getElementById("gw-status-note");
+    const outcome = document.getElementById("gw-status-result");
+    const active = document.getElementById("gw-active");
+    if (!box || !title || !note || !outcome) return;
+    if (phase !== "ended" && phase !== "closed") {
+      box.hidden = true;
+      if (active) active.hidden = false;
+      return;
+    }
+    box.hidden = false;
+    outcome.replaceChildren();
+    if (phase === "closed") {
+      title.textContent = "Înscrierile s-au închis, extragerea urmează";
+      note.textContent = "Rămâi pe pagina de extragere. Câștigătorul se anunță live.";
+      if (active) active.hidden = false;
+      if (phaseEl) phaseEl.textContent = "Înscrierile s-au închis, extragerea urmează";
+      return;
+    }
+    title.textContent = "Momentan nu este niciun giveaway activ";
+    note.replaceChildren();
+    note.append(document.createTextNode("Urmărește "));
+    const discord = document.createElement("a");
+    discord.href = "https://discord.com/invite/9CwwfAAPdB";
+    discord.target = "_blank";
+    discord.rel = "noopener noreferrer";
+    discord.textContent = "Discord";
+    const youtube = document.createElement("a");
+    youtube.href = "https://www.youtube.com/@kipanu";
+    youtube.target = "_blank";
+    youtube.rel = "noopener noreferrer";
+    youtube.textContent = "YouTube";
+    note.append(discord, document.createTextNode(" și "), youtube, document.createTextNode(" ca să afli când începe următorul."));
+    if (active) active.hidden = true;
+    if (phaseEl) phaseEl.textContent = "Momentan nu este niciun giveaway activ";
+    if (!result || !result.winner) return;
+    const list = document.createElement("div");
+    list.className = "specs";
+    const winner = result.winner;
+    addSpec(list, "Ultimul câștigător", "@" + winner.handle + " · " + platformLabel(winner.platform) + " · " + entryLabel(winner.entries || winner.weight));
+    (result.reserves || []).forEach((reserve, index) => {
+      addSpec(list, "Rezerva " + (index + 1), "@" + reserve.handle + " · " + platformLabel(reserve.platform));
+    });
+    outcome.append(list);
+    if (verifyHref) {
+      const link = document.createElement("a");
+      link.className = "back";
+      link.href = verifyHref;
+      link.textContent = "Verifică extragerea →";
+      outcome.append(link);
+    }
+  }
+
+  function demoPhase() {
+    const value = new URLSearchParams(window.location.search).get("demo");
+    if (value === "ended" || value === "closed") return value;
+    return "";
   }
 
   function renderBoard(payload) {
@@ -217,6 +287,8 @@
         setTotal("gw-participants", leaders.participants);
         setTotal("gw-entries", leaders.entries);
         setTotal("gw-lives", stats.lives);
+        const phase = window.GiveawayDraw.campaignPhase(stats, Date.now());
+        renderCampaignState(phase, drawResult.data && drawResult.data.result, "/giveaway/extragere/");
         renderPhase(stats);
         renderBoard(leaders);
         const hash = (drawResult.data && drawResult.data.commit && drawResult.data.commit.hash) || stats.commitHash;
@@ -315,9 +387,21 @@
     }
   }
 
+  const forcedPhase = demoPhase();
   const demo = window.GiveawayDemo && window.GiveawayDemo.isDemo(window.location.search);
   tick();
   setInterval(tick, 1000);
+  if (forcedPhase) {
+    showAlert(window.GiveawayDemo ? window.GiveawayDemo.BANNER : "SIMULARE – date de test");
+    renderCampaignState(forcedPhase, forcedPhase === "ended" ? {
+      winner: { platform: "youtube", handle: "test_alina", entries: 19 },
+      reserves: [
+        { platform: "tiktok", handle: "test_sofia", entries: 11 },
+        { platform: "youtube", handle: "test_raul", entries: 17 },
+      ],
+    } : null, "/giveaway/extragere/?demo=1");
+    return;
+  }
   if (demo) {
     runDemo();
     return;

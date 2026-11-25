@@ -536,8 +536,13 @@ test("pages stay on the site theme and out of the homepage", () => {
   assert.match(page, /id="gw-search"/);
   assert.match(page, /Clasament/);
   assert.match(page, /15000|15 secunde/);
-  assert.equal(fs.readFileSync("index.html", "utf8").includes("/giveaway"), false);
-  assert.equal(fs.readFileSync("sitemap.xml", "utf8").includes("giveaway"), false);
+  const home = fs.readFileSync("index.html", "utf8");
+  assert.match(home, /GIVEAWAY GTA 6/);
+  assert.match(home, /href="\/giveaway\/"/);
+  assert.match(fs.readFileSync("sitemap.xml", "utf8"), /https:\/\/kipzone\.ro\/giveaway\//);
+  assert.equal(draw.campaignPhase({ revealed: true, window: { close: draw.CAMPAIGN.close } }, Date.parse(draw.CAMPAIGN.close) - 1), "ended");
+  assert.equal(draw.campaignPhase({ revealed: false, window: { close: draw.CAMPAIGN.close } }, Date.parse(draw.CAMPAIGN.close)), "closed");
+  assert.equal(draw.campaignPhase({ revealed: false, open: true, window: { close: draw.CAMPAIGN.close } }, Date.parse(draw.CAMPAIGN.open)), "running");
   const config = JSON.parse(fs.readFileSync("vercel.json", "utf8"));
   const giveaway = config.headers.find((item) => item.source === "/giveaway(.*)");
   assert.match(giveaway.headers[0].value, /script-src 'self'/);

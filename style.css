@@ -262,6 +262,37 @@ button:focus-visible {
   background: #ff2a2a24;
 }
 
+.btn.giveaway-tile {
+  grid-column: 1 / -1;
+  border-color: var(--gold);
+  background: #ffd34f14;
+  box-shadow: 0 0 0 1px #ffd34f55, 0 0 18px #ffd34f2e;
+  color: var(--gold);
+}
+
+.btn.giveaway-tile:hover {
+  border-color: var(--gold);
+  background: #ffd34f22;
+  box-shadow: 0 0 0 1px var(--gold), 0 0 26px #ffd34f55;
+}
+
+.giveaway-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+
+.giveaway-sub {
+  color: var(--text);
+  font-size: 0.72em;
+  letter-spacing: 0.14em;
+  opacity: 0.9;
+}
+
+.giveaway-sub[hidden] { display: none; }
+
 .sr-only {
   position: absolute;
   width: 1px;
