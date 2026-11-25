@@ -113,7 +113,15 @@
     return { picks, counter };
   }
 
+  function campaignPhase(stats, now) {
+    if (stats && stats.revealed) return "ended";
+    const close = stats && stats.window && Date.parse(stats.window.close);
+    if (Number.isFinite(close) && now >= close) return "closed";
+    return "running";
+  }
+
   return {
+    campaignPhase: campaignPhase,
     CAMPAIGN,
     RANGE,
     sha256Hex,

@@ -153,4 +153,32 @@
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) tick();
   });
+
+  var giveawaySub = document.getElementById("giveaway-sub");
+  if (giveawaySub) {
+    var giveawayDemo = new URLSearchParams(window.location.search).get("demo");
+    if (giveawayDemo === "ended" || giveawayDemo === "closed") {
+      giveawaySub.hidden = false;
+      giveawaySub.textContent = giveawayDemo === "ended" ? "Încheiat" : "Extragere";
+    } else {
+      fetch("/api/giveaway/stats", { headers: { Accept: "application/json" } })
+        .then(function (response) { return response.ok ? response.json() : null; })
+        .then(function (data) {
+          if (!data || data.configured === false) return;
+          if (data.revealed) {
+            giveawaySub.hidden = false;
+            giveawaySub.textContent = "Încheiat";
+            return;
+          }
+          var closeAt = data.window && Date.parse(data.window.close);
+          if (closeAt && Date.now() >= closeAt) {
+            giveawaySub.hidden = false;
+            giveawaySub.textContent = "Extragere";
+          }
+        })
+        .catch(function () {
+          /* The tile stays usable without a status line. */
+        });
+    }
+  }
 })();
