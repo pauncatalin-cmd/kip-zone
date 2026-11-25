@@ -1,0 +1,14 @@
+{
+  "name": "kipzone-giveaway-collector",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node collector.js"
+  },
+  "dependencies": {
+    "tiktok-live-connector": "2.5.0"
+  }
+}
