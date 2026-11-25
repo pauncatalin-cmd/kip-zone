@@ -27,7 +27,7 @@
 <link rel="icon" href="/assets/favicon-32.png?v=brand-20261116" type="image/png" sizes="32x32">
 <link rel="icon" href="/assets/favicon-16.png?v=brand-20261116" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=brand-20261116">
-<link rel="stylesheet" href="/style.css?v=gta6-20261125">
+<link rel="stylesheet" href="/style.css?v=gta6-demo-20261125">
 </head>
 <body>
 <a class="skip" href="#main">Sari la conținut</a>
@@ -43,6 +43,14 @@
       <div class="gw-pointer" aria-hidden="true"></div>
       <canvas id="gw-wheel" class="gw-wheel" width="640" height="640">Roata extragerii</canvas>
     </div>
+    <div class="hardware" id="gw-demo-totals" hidden>
+      <div><span>Participanți</span><strong id="gw-demo-people">–</strong></div>
+      <div><span>Intrări</span><strong id="gw-demo-entries">–</strong></div>
+      <div><span>Rezerve</span><strong>2</strong></div>
+    </div>
+    <p class="gw-demo-actions" id="gw-demo-actions" hidden>
+      <button class="btn" id="gw-demo-start" type="button">Pornește simularea</button>
+    </p>
     <p id="gw-wheel-note" class="lede">Așteptăm extragerea din 24 decembrie, ora 20:00 (Europa/București).</p>
     <h2>Rezultat</h2>
     <div id="gw-result" class="specs" aria-live="polite"></div>
@@ -50,14 +58,16 @@
     <dl class="specs">
       <div class="spec"><dt>Angajament</dt><dd id="gw-commit" class="gw-hash">Încă nu a fost publicat.</dd></div>
       <div class="spec"><dt>Listă înghețată</dt><dd id="gw-snapshot" class="gw-hash">Lista nu este înghețată.</dd></div>
+      <div class="spec"><dt>Seed</dt><dd id="gw-seed" class="gw-hash">Ascuns până la extragere.</dd></div>
       <div class="spec"><dt>În browser</dt><dd id="gw-check">Se verifică după ce există lista și seed-ul.</dd></div>
     </dl>
     <p class="lede"><a class="back" href="/giveaway/#regulament">Regulamentul complet →</a></p>
     <p class="fineprint">© 2026 KIP. Gaming. Comunitate. Energie.</p>
   </div>
 </main>
-<script defer src="/giveaway/draw-math.js?v=gta6-20261125"></script>
-<script defer src="/giveaway/extragere/wheel.js?v=gta6-20261125"></script>
+<script defer src="/giveaway/draw-math.js?v=gta6-demo-20261125"></script>
+<script defer src="/giveaway/demo.js?v=gta6-demo-20261125"></script>
+<script defer src="/giveaway/extragere/wheel.js?v=gta6-demo-20261125"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

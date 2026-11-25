@@ -258,6 +258,65 @@
     });
   }
 
+  function localSearch(pack, query) {
+    const needle = query.toLowerCase();
+    const results = pack.list
+      .filter((row) => {
+        return row.handle.toLowerCase().includes(needle) || row.displayName.toLowerCase().includes(needle);
+      })
+      .map((row) => ({
+        platform: row.platform,
+        handle: row.handle,
+        displayName: row.displayName,
+        entries: row.weight,
+        dates: row.dates,
+      }))
+      .sort((a, b) => b.entries - a.entries || a.handle.localeCompare(b.handle, "ro"));
+    return results.slice(0, 20);
+  }
+
+  async function runDemo() {
+    const pack = await window.GiveawayDemo.build(window.GiveawayDraw);
+    showAlert(pack.banner);
+    configured = true;
+    setTotal("gw-participants", pack.participants);
+    setTotal("gw-entries", pack.entries);
+    setTotal("gw-lives", pack.lives);
+    if (phaseEl) phaseEl.textContent = "Simulare: lista de test este înghețată. Hash-ul de angajament este public.";
+    renderBoard({
+      leaders: pack.list
+        .map((row) => ({ platform: row.platform, handle: row.handle, displayName: row.displayName, entries: row.weight }))
+        .sort((a, b) => b.entries - a.entries || a.handle.localeCompare(b.handle, "ro"))
+        .slice(0, 20),
+    });
+    if (commitEl) commitEl.textContent = pack.commitHash;
+    document.querySelectorAll('a[href="/giveaway/extragere/"]').forEach((link) => {
+      link.href = "/giveaway/extragere/?demo=1";
+    });
+    const form = document.getElementById("gw-search");
+    if (form) {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const input = document.getElementById("gw-q");
+        const query = input ? input.value.trim().replace(/^@+/, "") : "";
+        if (query.length < 2) {
+          renderSearch(null, "Scrie cel puțin 2 caractere.");
+          return;
+        }
+        const results = localSearch(pack, query);
+        renderSearch({ results: results }, results.length ? "" : "Nicio intrare de test pentru această căutare.");
+      });
+    }
+  }
+
+  const demo = window.GiveawayDemo && window.GiveawayDemo.isDemo(window.location.search);
+  tick();
+  setInterval(tick, 1000);
+  if (demo) {
+    runDemo();
+    return;
+  }
+
   const form = document.getElementById("gw-search");
   if (form) {
     form.addEventListener("submit", (event) => {
@@ -272,8 +331,6 @@
     });
   }
 
-  tick();
-  setInterval(tick, 1000);
   refresh();
   setInterval(() => {
     if (!document.hidden) refresh();

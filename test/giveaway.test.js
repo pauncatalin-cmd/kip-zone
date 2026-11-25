@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const draw = require("../giveaway/draw-math");
+const demo = require("../giveaway/demo");
 const { createMemoryRedis, createUpstashRedis, redisFromEnv } = require("../api/_lib/redis");
 const api = require("../api/_lib/giveaway");
 const match = require("../tools/giveaway-collector/match");
@@ -422,6 +423,41 @@ test("collector dedup, command and chat parsing", async () => {
   });
   assert.equal(posted.ok, true);
   assert.equal(calls, 3);
+});
+
+test("demo mode is local, labelled, and deterministic", async () => {
+  assert.equal(demo.isDemo("?demo=1"), true);
+  assert.equal(demo.isDemo("demo=1"), true);
+  assert.equal(demo.isDemo("?demo=1&x=2"), true);
+  assert.equal(demo.isDemo("?demo=true"), false);
+  assert.equal(demo.isDemo(""), false);
+  assert.equal(demo.BANNER, "SIMULARE – date de test");
+  assert.equal(demo.RESERVES, 2);
+  assert.ok(demo.ROSTER.length >= 25 && demo.ROSTER.length <= 40);
+  const platforms = new Set(demo.ROSTER.map((row) => row[0]));
+  assert.deepEqual([...platforms].sort(), ["tiktok", "youtube"]);
+  for (const row of demo.ROSTER) {
+    assert.match(row[1], /^test_/);
+    assert.ok(row[2] >= 1 && row[2] <= 20);
+  }
+  const source = fs.readFileSync(path.join("giveaway", "demo.js"), "utf8");
+  assert.equal(source.includes("fetch("), false);
+  assert.equal(source.includes("UPSTASH"), false);
+  const first = await demo.build(draw);
+  const second = await demo.build(draw);
+  assert.equal(first.participants, demo.ROSTER.length);
+  assert.equal(first.entries, demo.ROSTER.reduce((sum, row) => sum + row[2], 0));
+  assert.equal(first.commitHash, await draw.sha256Hex(demo.SEED));
+  assert.equal(first.snapshotHash, await draw.sha256Hex(draw.canonicalJson(first.list)));
+  assert.equal(first.reservePicks.length, 2);
+  assert.equal(first.winner.handle.startsWith("test_"), true);
+  assert.deepEqual(first.winner.key, second.winner.key);
+  assert.deepEqual(first.reservePicks.map((row) => row.key), second.reservePicks.map((row) => row.key));
+  assert.equal(JSON.stringify(first.list).includes("demo-test-"), false);
+  const page = fs.readFileSync(path.join("giveaway", "page.js"), "utf8");
+  const demoStart = page.indexOf("async function runDemo");
+  const demoEnd = page.indexOf("const demo = window.GiveawayDemo");
+  assert.equal(page.slice(demoStart, demoEnd).includes("fetch("), false);
 });
 
 test("pages stay on the site theme and out of the homepage", () => {

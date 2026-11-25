@@ -652,6 +652,19 @@ button:focus-visible {
   display: block;
 }
 
+.gw-demo-actions { margin: 12px 0 0; }
+
+.gw-demo-actions[hidden],
+#gw-demo-totals[hidden] { display: none; }
+
+.gw-demo-actions .btn {
+  width: auto;
+  min-height: 48px;
+  padding-inline: 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 @media (max-width: 680px) {
   .hardware.gw-count { grid-template-columns: 1fr 1fr; }
 

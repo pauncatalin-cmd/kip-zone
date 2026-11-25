@@ -6,6 +6,7 @@
   const commitEl = document.getElementById("gw-commit");
   const snapshotEl = document.getElementById("gw-snapshot");
   const checkEl = document.getElementById("gw-check");
+  const seedEl = document.getElementById("gw-seed");
   const colors = ["#121614", "#12343a", "#2a2412", "#3a2218"];
   let spun = false;
 
@@ -177,7 +178,8 @@
         setText(checkEl, "Lista înghețată se potrivește cu hash-ul public. Seed-ul încă nu este arătat.");
         return;
       }
-      const drawn = await math.drawWinners(list, data.result.seed, hash, math.CAMPAIGN.reserves);
+      const reserveCount = Number.isInteger(data.result.reserveCount) ? data.result.reserveCount : math.CAMPAIGN.reserves;
+      const drawn = await math.drawWinners(list, data.result.seed, hash, reserveCount);
       if (!drawn.picks[0] || drawn.picks[0].key !== data.result.winner.key) {
         setText(checkEl, "Recalcularea din browser nu se potrivește cu rezultatul publicat.");
         return;
@@ -204,6 +206,7 @@
       showAlert("");
       setText(commitEl, data.commit && data.commit.hash ? data.commit.hash : "Încă nu a fost publicat.");
       setText(snapshotEl, data.snapshot && data.snapshot.hash ? data.snapshot.hash : "Lista nu este înghețată.");
+      setText(seedEl, data.result && data.result.seed ? data.result.seed : "Ascuns până la extragere.");
       const winnerKey = data.result && data.result.winner ? data.result.winner.key : "";
       const segments = segmentsFrom(data.snapshot && data.snapshot.list, winnerKey);
       renderResult(data, segments);
@@ -214,8 +217,89 @@
     }
   }
 
+  function paintNames(list) {
+    const winner = list.find((row) => row.winner);
+    const plain = list.map((row) => ({ handle: row.handle, winner: false }));
+    paint(plain);
+    return winner ? list.findIndex((row) => row.winner) : 0;
+  }
+
+  function finishDemo(pack, segments) {
+    const marked = segments.map((segment) => ({
+      handle: segment.handle,
+      winner: segment.handle === pack.winner.handle,
+    }));
+    paint(marked);
+    result.replaceChildren();
+    addRow("Câștigător", "@" + pack.winner.handle + " · " + platformLabel(pack.winner.platform) + " · " + pack.winner.weight + (pack.winner.weight === 1 ? " intrare" : " intrări"));
+    pack.reservePicks.forEach((reserve, index) => {
+      addRow("Rezerva " + (index + 1), "@" + reserve.handle + " · " + platformLabel(reserve.platform) + " · " + reserve.weight + " intrări");
+    });
+    setText(seedEl, pack.seed);
+    setText(note, "Simulare încheiată. Seed-ul de test este public. Verificarea de mai jos recalculează același câștigător.");
+    verify({
+      snapshot: { list: pack.list, hash: pack.snapshotHash },
+      result: {
+        seed: pack.seed,
+        reserveCount: pack.reserves,
+        winner: { key: pack.winner.key },
+      },
+    });
+  }
+
+  async function runDemo() {
+    const pack = await window.GiveawayDemo.build(window.GiveawayDraw);
+    showAlert(pack.banner);
+    const people = document.getElementById("gw-demo-people");
+    const entries = document.getElementById("gw-demo-entries");
+    const totals = document.getElementById("gw-demo-totals");
+    const actions = document.getElementById("gw-demo-actions");
+    if (people) people.textContent = String(pack.participants);
+    if (entries) entries.textContent = String(pack.entries);
+    if (totals) totals.hidden = false;
+    if (actions) actions.hidden = false;
+    setText(commitEl, pack.commitHash);
+    setText(snapshotEl, pack.snapshotHash);
+    setText(seedEl, "Ascuns până la extragere.");
+    setText(note, "Lista de test este înghețată. Hash-ul de angajament este public. Apasă butonul ca să vezi roata, câștigătorul, cele 2 rezerve și seed-ul.");
+    result.replaceChildren();
+    addRow("Câștigător", "Încă nu este extras.");
+    const back = document.querySelector('a[href="/giveaway/"]');
+    if (back) back.href = "/giveaway/?demo=1";
+    const segments = segmentsFrom(pack.list, pack.winner.key).map((segment) => ({
+      handle: segment.handle,
+      winner: segment.handle === pack.winner.handle,
+    }));
+    const winnerIndex = paintNames(segments);
+    const button = document.getElementById("gw-demo-start");
+    if (!button) return;
+      button.addEventListener("click", () => {
+      if (button.disabled) return;
+      button.disabled = true;
+      setText(note, "Roata se învârte. Biletele sunt deja numărate: cine are mai multe intrări are mai multe șanse.");
+      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      spinTo(winnerIndex, segments.length);
+      let finished = false;
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        finishDemo(pack, segments);
+      };
+      if (reduce) {
+        done();
+        return;
+      }
+      canvas.addEventListener("transitionend", done, { once: true });
+      setTimeout(done, 8000);
+    });
+  }
+
   function start() {
     paint([{ handle: "24 DEC", winner: false }]);
+    if (window.GiveawayDemo && window.GiveawayDemo.isDemo(window.location.search)) {
+      runDemo();
+      return;
+    }
     load();
     setInterval(() => {
       if (!document.hidden && !spun) load();
