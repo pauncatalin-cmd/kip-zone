@@ -1,0 +1,7 @@
+{
+  "name": "kipzone",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  }
+}

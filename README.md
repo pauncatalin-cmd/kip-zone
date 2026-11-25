@@ -1,0 +1,46 @@
+# Giveaway GTA 6
+
+Paginile publice sunt `/giveaway/` și `/giveaway/extragere/`. Nu sunt în meniul de pe prima pagină și nu sunt în sitemap. Colectorul de chat stă în `tools/giveaway-collector/` și rulează pe PC-ul organizatorului.
+
+Extragerea este pe 24 decembrie 2026, ora 20:00, Europa/București. În Germania, iarna, asta este ora 19:00. Înscrierile țin de la 1 decembrie 2026, ora 00:00, până la ora extragerii. Comanda este exact `!gta6`.
+
+## Variabile de mediu în Vercel
+
+Creează-le în Project → Settings → Environment Variables, pentru Production și Preview. Nu le pune în git. Nu folosi Vercel KV: stocarea este Upstash Redis prin REST.
+
+| Variabilă | Unde | Rol |
+| --- | --- | --- |
+| `UPSTASH_REDIS_REST_URL` | Vercel | URL-ul REST al bazei Upstash, cu `https://` |
+| `UPSTASH_REDIS_REST_TOKEN` | Vercel | Tokenul REST Upstash |
+| `GIVEAWAY_INGEST_SECRET` | Vercel și `.env` de pe PC | Bearer pentru `POST /api/giveaway/entry` |
+| `GIVEAWAY_ADMIN_SECRET` | Vercel | Bearer pentru ban, unban, extragere și CSV |
+
+Fără `UPSTASH_REDIS_REST_URL` și `UPSTASH_REDIS_REST_TOKEN`, pagina se încarcă și afișează „nu este configurată”. Nu pică.
+
+Dacă `GIVEAWAY_ADMIN_SECRET` lipsește, rutele de admin acceptă `GIVEAWAY_INGEST_SECRET`. Mai bine ții secretele separate.
+
+Cheile `KICK_CLIENT_ID`, `KICK_CLIENT_SECRET` și `YOUTUBE_API_KEY` de pe site sunt pentru live și urmăritori. Giveaway-ul de pe Vercel nu le citește. Cheia de YouTube pentru chat stă doar în `.env` de pe PC.
+
+Generează un secret:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+## Extragerea, pe scurt
+
+1. Generează un seed lung și salvează-l undeva sigur. Serverul nu îl păstrează la commit.
+2. `POST /api/giveaway/draw` cu `Authorization: Bearer` secretul de admin și body `{"action":"commit","seed":"..."}`. Hash-ul apare pe pagină.
+3. La 20:00 așteaptă un minut, ca să intre ultimele mesaje, apoi `{"action":"freeze"}`.
+4. Pe live, `{"action":"reveal","seed":"..."}`. Deschide `/giveaway/extragere/`. Roata doar arată rezultatul.
+5. CSV-ul cu ID-urile interne este `GET /api/giveaway/export`. Nu îl publica.
+
+Ban și unban: `POST /api/giveaway/ban` și `POST /api/giveaway/unban`, cu `{"platform":"tiktok","userId":"..."}`. Fă-le înainte de freeze.
+
+Clasamentul public este `GET /api/giveaway/leaderboard`. Nu conține ID-uri interne și sare peste conturile eliminate.
+
+## Teste
+
+```powershell
+node --test
+```
