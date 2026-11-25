@@ -238,8 +238,23 @@ test("missing redis is a clear error and secrets are compared", async () => {
   assert.equal(stats.statusCode, 503);
   assert.equal(stats.body.configured, false);
   assert.match(stats.body.message, /UPSTASH_REDIS_REST_URL/);
+  assert.match(stats.body.message, /KV_REST_API_URL/);
+  assert.match(stats.body.message, /KV_REST_API_TOKEN/);
   const partial = redisFromEnv({ UPSTASH_REDIS_REST_URL: "http://example.upstash.io", UPSTASH_REDIS_REST_TOKEN: "x" });
   assert.equal(partial.ok, false);
+  const fromMarketplace = redisFromEnv({
+    KV_REST_API_URL: "https://example.upstash.io",
+    KV_REST_API_TOKEN: "kv-token",
+  });
+  assert.equal(fromMarketplace.ok, true);
+  const prefersUpstash = redisFromEnv({
+    UPSTASH_REDIS_REST_URL: "http://insecure.example",
+    UPSTASH_REDIS_REST_TOKEN: "a",
+    KV_REST_API_URL: "https://example.upstash.io",
+    KV_REST_API_TOKEN: "b",
+  });
+  assert.equal(prefersUpstash.ok, false);
+  assert.match(prefersUpstash.message, /HTTPS/);
 
   const options = world(Date.parse("2026-12-10T18:00:00+02:00"));
   const denied = await call(api.handleEntry, { method: "POST", headers: auth("nope"), body: entry() }, options);
