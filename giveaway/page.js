@@ -276,22 +276,28 @@
   }
 
   async function runDemo() {
-    const pack = await window.GiveawayDemo.build(window.GiveawayDraw);
+    const count = window.GiveawayDemo.demoCount(window.location.search);
+    const pinned = window.GiveawayDemo.demoSeed(window.location.search);
+    const pack = await window.GiveawayDemo.prepare(window.GiveawayDraw, count);
     showAlert(pack.banner);
     configured = true;
     setTotal("gw-participants", pack.participants);
     setTotal("gw-entries", pack.entries);
     setTotal("gw-lives", pack.lives);
-    if (phaseEl) phaseEl.textContent = "Simulare: lista de test este înghețată. Hash-ul de angajament este public.";
+    if (phaseEl) {
+      phaseEl.textContent = pinned
+        ? "Simulare: lista de test este înghețată. Seed-ul din adresă reia același rezultat."
+        : "Simulare: lista de test este înghețată. Fiecare pornire a extragerii folosește un seed nou.";
+    }
     renderBoard({
       leaders: pack.list
         .map((row) => ({ platform: row.platform, handle: row.handle, displayName: row.displayName, entries: row.weight }))
         .sort((a, b) => b.entries - a.entries || a.handle.localeCompare(b.handle, "ro"))
         .slice(0, 20),
     });
-    if (commitEl) commitEl.textContent = pack.commitHash;
+    if (commitEl) commitEl.textContent = pinned ? await window.GiveawayDraw.sha256Hex(pinned) : "Se calculează la fiecare pornire a simulării.";
     document.querySelectorAll('a[href="/giveaway/extragere/"]').forEach((link) => {
-      link.href = "/giveaway/extragere/?demo=1";
+      link.href = "/giveaway/extragere/?" + window.GiveawayDemo.demoQuery(window.location.search);
     });
     const form = document.getElementById("gw-search");
     if (form) {

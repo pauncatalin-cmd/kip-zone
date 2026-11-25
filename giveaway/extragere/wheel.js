@@ -7,8 +7,9 @@
   const snapshotEl = document.getElementById("gw-snapshot");
   const checkEl = document.getElementById("gw-check");
   const seedEl = document.getElementById("gw-seed");
+  const reel = document.getElementById("gw-reel");
   const colors = ["#121614", "#12343a", "#2a2412", "#3a2218"];
-  let spun = false;
+  let spinToken = 0;
 
   function platformLabel(id) {
     if (id === "tiktok") return "TikTok";
@@ -26,109 +27,117 @@
     alertEl.textContent = message || "";
   }
 
-  function segmentsFrom(list, winnerKey) {
-    if (!Array.isArray(list) || !list.length) return [];
-    const index = list.findIndex((row) => row.key === winnerKey);
-    if (index < 0) {
-      return list.slice(0, 16).map((row) => decorate(row, false));
-    }
-    const max = 16;
-    let start = 0;
-    if (list.length > max) {
-      start = Math.max(0, index - 7);
-      if (start + max > list.length) start = list.length - max;
-    }
-    return list.slice(start, start + max).map((row) => decorate(row, row.key === winnerKey));
+  function showReel(text, locked) {
+    if (!reel) return;
+    reel.hidden = !text;
+    reel.textContent = text || "";
+    reel.classList.toggle("is-winner", Boolean(locked));
   }
 
-  function decorate(row, winner) {
-    return {
-      handle: row.handle || row.displayName || "—",
-      winner: winner,
-    };
+  function fitCanvas() {
+    const css = Math.max(canvas.clientWidth || 640, 280);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const px = Math.round(css * dpr);
+    if (canvas.width !== px || canvas.height !== px) {
+      canvas.width = px;
+      canvas.height = px;
+    }
+    return px;
   }
 
-  function paint(segments) {
+  function paint(slices, highlight) {
+    const size = fitCanvas();
     const ctx = canvas.getContext("2d");
-    const size = canvas.width;
     const cx = size / 2;
     const cy = size / 2;
-    const radius = size / 2 - 12;
+    const radius = size / 2 - 8;
     ctx.clearRect(0, 0, size, size);
-    const count = Math.max(segments.length, 1);
-    const arc = (Math.PI * 2) / count;
-    for (let i = 0; i < count; i++) {
-      const start = -Math.PI / 2 + i * arc;
-      const segment = segments[i];
+    const list = slices && slices.length ? slices : [{ handle: "24 DEC", start: 0, end: Math.PI * 2, mid: Math.PI, arc: Math.PI * 2, label: true, winner: false, weight: 1 }];
+    for (let index = 0; index < list.length; index++) {
+      const slice = list[index];
+      const start = -Math.PI / 2 + slice.start;
+      const end = -Math.PI / 2 + slice.end;
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, radius, start, start + arc);
+      ctx.arc(cx, cy, radius, start, end);
       ctx.closePath();
-      ctx.fillStyle = segment && segment.winner ? "#ffd34f" : colors[i % colors.length];
+      ctx.fillStyle = highlight && slice.winner ? "#ffd34f" : colors[index % colors.length];
       ctx.fill();
-      ctx.strokeStyle = "#080a0b";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      if (!segment) continue;
-      if (count === 1) {
-        ctx.fillStyle = segment.winner ? "#080a0b" : "#f6f3e9";
-        ctx.font = "600 28px Barlow, Arial, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(String(segment.handle).replace(/^@+/, "").slice(0, 16), cx, cy + 110);
-        continue;
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "#ffd34f55";
+    ctx.lineWidth = Math.max(2, size / 220);
+    ctx.stroke();
+    for (let index = 0; index < list.length; index++) {
+      const slice = list[index];
+      const wideEnough = slice.label || (highlight && slice.winner && slice.arc >= 0.22);
+      if (highlight && slice.winner && slice.arc < 0.08) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(-Math.PI / 2 + slice.mid);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(radius, 0);
+        ctx.strokeStyle = "#ffd34f";
+        ctx.lineWidth = Math.max(3, size / 140);
+        ctx.stroke();
+        ctx.restore();
       }
+      if (!wideEnough) continue;
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(start + arc / 2);
+      ctx.rotate(-Math.PI / 2 + slice.mid);
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = segment.winner ? "#080a0b" : "#f6f3e9";
-      ctx.font = "600 28px Barlow, Arial, sans-serif";
-      ctx.fillText(String(segment.handle).replace(/^@+/, "").slice(0, 16), radius - 28, 0);
+      ctx.fillStyle = highlight && slice.winner ? "#080a0b" : "#f6f3e9";
+      ctx.font = "600 " + Math.round(size / 42) + "px Barlow, Arial, sans-serif";
+      ctx.fillText(String(slice.handle).replace(/^@+/, "").slice(0, 14), radius - size / 18, 0);
       ctx.restore();
     }
     ctx.beginPath();
-    ctx.arc(cx, cy, 58, 0, Math.PI * 2);
+    ctx.arc(cx, cy, size * 0.09, 0, Math.PI * 2);
     ctx.fillStyle = "#080a0b";
     ctx.fill();
-    ctx.lineWidth = 4;
+    ctx.lineWidth = Math.max(3, size / 160);
     ctx.strokeStyle = "#ffd34f";
     ctx.stroke();
     ctx.fillStyle = "#ffd34f";
-    ctx.font = "800 24px 'Barlow Condensed', Impact, sans-serif";
+    ctx.font = "800 " + Math.round(size / 26) + "px 'Barlow Condensed', Impact, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("GTA 6", cx, cy);
   }
 
-  function landingAngle(index, count) {
-    const arc = (Math.PI * 2) / Math.max(count, 1);
-    const mid = -Math.PI / 2 + index * arc + arc / 2;
-    let theta = -Math.PI / 2 - mid;
-    const turns = 6 * Math.PI * 2;
-    while (theta < turns) theta += Math.PI * 2;
-    return theta;
-  }
-
-  function spinTo(index, count) {
+  function spinSlices(slices, winnerKey, onFrame, onDone) {
+    const wheel = window.GiveawayWheel;
+    const winner = slices.find((slice) => slice.key === winnerKey) || slices[0];
+    const token = ++spinToken;
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const theta = landingAngle(index, count);
-    if (reduce || spun) {
-      canvas.style.transition = "none";
-      canvas.style.transform = "rotate(" + theta + "rad)";
-      spun = true;
+    canvas.style.transition = "none";
+    canvas.style.willChange = "transform";
+    if (!winner || reduce) {
+      if (winner) canvas.style.transform = "rotate(" + wheel.landingRotation(winner.mid) + "rad)";
+      if (winner) onFrame(winner);
+      onDone();
       return;
     }
-    canvas.style.transition = "none";
+    const theta = wheel.landingRotation(winner.mid);
+    const duration = 6500;
+    const started = performance.now();
     canvas.style.transform = "rotate(0rad)";
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        canvas.style.transition = "transform 6.5s cubic-bezier(0.12, 0.7, 0.08, 1)";
-        canvas.style.transform = "rotate(" + theta + "rad)";
-        spun = true;
-      });
-    });
+    function frame(now) {
+      if (token !== spinToken) return;
+      const t = Math.min(1, (now - started) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const angle = theta * eased;
+      canvas.style.transform = "rotate(" + angle + "rad)";
+      const under = wheel.sliceAt(slices, wheel.pointerFromRotation(angle));
+      if (under) onFrame(under);
+      if (t < 1) requestAnimationFrame(frame);
+      else onDone();
+    }
+    requestAnimationFrame(frame);
   }
 
   function addRow(term, value) {
@@ -142,22 +151,35 @@
     result.append(row);
   }
 
-  function renderResult(data, segments) {
+  function personLine(person, entries) {
+    const count = entries == null ? person.entries || person.weight : entries;
+    return "@" + person.handle + " · " + platformLabel(person.platform) + (count ? " · " + count + (count === 1 ? " intrare" : " intrări") : "");
+  }
+
+  function renderResult(data) {
     result.replaceChildren();
+    const list = data && data.snapshot && data.snapshot.list;
     const winner = data && data.result && data.result.winner;
     if (!winner) {
       addRow("Câștigător", "Încă nu este extras.");
-      paint(segments.length ? segments : [{ handle: "24 DEC", winner: false }]);
+      paint(window.GiveawayWheel.layoutSlices(list || [], ""), false);
+      showReel("", false);
       return;
     }
-    const winnerIndex = Math.max(0, segments.findIndex((segment) => segment.winner));
-    paint(segments);
-    spinTo(winnerIndex, segments.length);
-    addRow("Câștigător", "@" + winner.handle + " · " + platformLabel(winner.platform) + " · " + winner.entries + (winner.entries === 1 ? " intrare" : " intrări"));
-    (data.result.reserves || []).forEach((reserve, index) => {
-      addRow("Rezerva " + (index + 1), "@" + reserve.handle + " · " + platformLabel(reserve.platform));
+    const slices = window.GiveawayWheel.layoutSlices(list || [], winner.key);
+    paint(slices, false);
+    showReel("", false);
+    spinSlices(slices, winner.key, (under) => {
+      showReel("@" + under.handle, false);
+    }, () => {
+      paint(slices, true);
+      showReel("@" + winner.handle, true);
     });
-    setText(note, "Animația este ilustrativă. Numele de sub roată este rezultatul oficial.");
+    addRow("Câștigător", personLine(winner, winner.entries));
+    (data.result.reserves || []).forEach((reserve, index) => {
+      addRow("Rezerva " + (index + 1), personLine(reserve, reserve.entries));
+    });
+    setText(note, "Animația este ilustrativă. Numele de sub roată este rezultatul oficial. Pe roată se scriu doar feliile destul de late.");
   }
 
   async function verify(data) {
@@ -198,7 +220,7 @@
         showAlert("Evidența giveaway-ului nu este configurată încă. Pagina poate fi citită, dar rezultatul apare după configurare și după extragerea live.");
         setText(commitEl, "Neconfigurat");
         setText(snapshotEl, "Neconfigurat");
-        paint([{ handle: "24 DEC", winner: false }]);
+        paint([], false);
         result.replaceChildren();
         addRow("Câștigător", "Neconfigurat");
         return;
@@ -207,48 +229,38 @@
       setText(commitEl, data.commit && data.commit.hash ? data.commit.hash : "Încă nu a fost publicat.");
       setText(snapshotEl, data.snapshot && data.snapshot.hash ? data.snapshot.hash : "Lista nu este înghețată.");
       setText(seedEl, data.result && data.result.seed ? data.result.seed : "Ascuns până la extragere.");
-      const winnerKey = data.result && data.result.winner ? data.result.winner.key : "";
-      const segments = segmentsFrom(data.snapshot && data.snapshot.list, winnerKey);
-      renderResult(data, segments);
+      renderResult(data);
       verify(data);
     } catch (error) {
       showAlert("Extragerea nu poate fi citită acum. Reîncarcă pagina.");
-      paint([{ handle: "24 DEC", winner: false }]);
+      paint([], false);
     }
   }
 
-  function paintNames(list) {
-    const winner = list.find((row) => row.winner);
-    const plain = list.map((row) => ({ handle: row.handle, winner: false }));
-    paint(plain);
-    return winner ? list.findIndex((row) => row.winner) : 0;
-  }
-
-  function finishDemo(pack, segments) {
-    const marked = segments.map((segment) => ({
-      handle: segment.handle,
-      winner: segment.handle === pack.winner.handle,
-    }));
-    paint(marked);
+  function finishDemo(pack, drawn, slices) {
+    paint(slices, true);
+    showReel("@" + drawn.winner.handle, true);
     result.replaceChildren();
-    addRow("Câștigător", "@" + pack.winner.handle + " · " + platformLabel(pack.winner.platform) + " · " + pack.winner.weight + (pack.winner.weight === 1 ? " intrare" : " intrări"));
-    pack.reservePicks.forEach((reserve, index) => {
-      addRow("Rezerva " + (index + 1), "@" + reserve.handle + " · " + platformLabel(reserve.platform) + " · " + reserve.weight + " intrări");
+    addRow("Câștigător", personLine(drawn.winner, drawn.winner.weight));
+    drawn.reservePicks.forEach((reserve, index) => {
+      addRow("Rezerva " + (index + 1), personLine(reserve, reserve.weight));
     });
-    setText(seedEl, pack.seed);
-    setText(note, "Simulare încheiată. Seed-ul de test este public. Verificarea de mai jos recalculează același câștigător.");
+    setText(note, "Simulare încheiată. Seed-ul de mai jos este cel folosit acum. Verificarea recalculează același câștigător.");
     verify({
       snapshot: { list: pack.list, hash: pack.snapshotHash },
       result: {
-        seed: pack.seed,
+        seed: drawn.seed,
         reserveCount: pack.reserves,
-        winner: { key: pack.winner.key },
+        winner: { key: drawn.winner.key },
       },
     });
   }
 
   async function runDemo() {
-    const pack = await window.GiveawayDemo.build(window.GiveawayDraw);
+    const demo = window.GiveawayDemo;
+    const count = demo.demoCount(window.location.search);
+    const pinned = demo.demoSeed(window.location.search);
+    const pack = await demo.prepare(window.GiveawayDraw, count);
     showAlert(pack.banner);
     const people = document.getElementById("gw-demo-people");
     const entries = document.getElementById("gw-demo-entries");
@@ -258,52 +270,51 @@
     if (entries) entries.textContent = String(pack.entries);
     if (totals) totals.hidden = false;
     if (actions) actions.hidden = false;
-    setText(commitEl, pack.commitHash);
+    setText(commitEl, pinned ? await window.GiveawayDraw.sha256Hex(pinned) : "Se calculează la fiecare pornire.");
     setText(snapshotEl, pack.snapshotHash);
-    setText(seedEl, "Ascuns până la extragere.");
-    setText(note, "Lista de test este înghețată. Hash-ul de angajament este public. Apasă butonul ca să vezi roata, câștigătorul, cele 2 rezerve și seed-ul.");
+    setText(seedEl, pinned ? pinned : "Un seed nou la fiecare pornire.");
+    setText(note, pack.participants > 40
+      ? "Lista de test este înghețată (" + pack.participants + " conturi). Feliile sunt proporționale cu intrările. Numele se scriu pe roată doar dacă încap; altfel curg sub săgeată."
+      : "Lista de test este înghețată. Fiecare pornire folosește un seed nou, deci alt câștigător.");
+    if (pinned) setText(note, "Seed-ul este fixat în adresă, ca să poți relua același rezultat. " + (note.textContent || ""));
     result.replaceChildren();
     addRow("Câștigător", "Încă nu este extras.");
-    const back = document.querySelector('a[href="/giveaway/"]');
-    if (back) back.href = "/giveaway/?demo=1";
-    const segments = segmentsFrom(pack.list, pack.winner.key).map((segment) => ({
-      handle: segment.handle,
-      winner: segment.handle === pack.winner.handle,
-    }));
-    const winnerIndex = paintNames(segments);
+    const query = demo.demoQuery(window.location.search);
+    const back = document.querySelector('a.back[href="/giveaway/"], a.back[href^="/giveaway/?"]');
+    if (back) back.href = "/giveaway/?" + query;
+    const slices = window.GiveawayWheel.layoutSlices(pack.list, "");
+    paint(slices, false);
+    showReel("", false);
     const button = document.getElementById("gw-demo-start");
     if (!button) return;
-      button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       if (button.disabled) return;
       button.disabled = true;
-      setText(note, "Roata se învârte. Biletele sunt deja numărate: cine are mai multe intrări are mai multe șanse.");
-      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      spinTo(winnerIndex, segments.length);
-      let finished = false;
-      const done = () => {
-        if (finished) return;
-        finished = true;
-        finishDemo(pack, segments);
-      };
-      if (reduce) {
-        done();
-        return;
-      }
-      canvas.addEventListener("transitionend", done, { once: true });
-      setTimeout(done, 8000);
+      const seed = pinned || demo.randomSeed();
+      const drawn = await demo.drawWith(window.GiveawayDraw, pack, seed);
+      const marked = window.GiveawayWheel.layoutSlices(pack.list, drawn.winner.key);
+      setText(commitEl, drawn.commitHash);
+      setText(seedEl, drawn.seed);
+      setText(note, "Roata se învârte cu seed-ul de mai sus. Cine are mai multe intrări are o felie mai mare.");
+      paint(marked, false);
+      showReel("@" + marked[0].handle, false);
+      spinSlices(marked, drawn.winner.key, (under) => {
+        showReel("@" + under.handle, false);
+      }, () => {
+        finishDemo(pack, drawn, marked);
+        button.disabled = false;
+        button.textContent = pinned ? "Repetă seed-ul" : "Pornește din nou";
+      });
     });
   }
 
   function start() {
-    paint([{ handle: "24 DEC", winner: false }]);
+    paint([], false);
     if (window.GiveawayDemo && window.GiveawayDemo.isDemo(window.location.search)) {
       runDemo();
       return;
     }
     load();
-    setInterval(() => {
-      if (!document.hidden && !spun) load();
-    }, 15000);
   }
 
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);

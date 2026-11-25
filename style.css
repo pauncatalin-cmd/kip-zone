@@ -650,6 +650,23 @@ button:focus-visible {
   width: 100%;
   height: auto;
   display: block;
+  will-change: transform;
+}
+
+.gw-reel {
+  margin: 4px 0 0;
+  min-height: 1.3em;
+  text-align: center;
+  color: var(--gold);
+  font: 800 italic 28px/1.1 'Barlow Condensed', Impact, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.gw-reel[hidden] { display: none; }
+
+.gw-reel.is-winner {
+  font-size: 42px;
+  text-shadow: 0 0 18px #ffd34f66;
 }
 
 .gw-demo-actions { margin: 12px 0 0; }

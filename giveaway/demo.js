@@ -41,10 +41,57 @@
     ["youtube", "test_rebeca", 15],
   ];
 
-  function isDemo(search) {
+  function paramsFrom(search) {
     const query = search == null ? "" : String(search);
-    const params = new URLSearchParams(query.charAt(0) === "?" ? query.slice(1) : query);
-    return params.get("demo") === "1";
+    return new URLSearchParams(query.charAt(0) === "?" ? query.slice(1) : query);
+  }
+
+  function isDemo(search) {
+    return paramsFrom(search).get("demo") === "1";
+  }
+
+  function demoCount(search) {
+    if (!isDemo(search)) return 0;
+    const raw = paramsFrom(search).get("n");
+    if (raw == null || raw === "") return 0;
+    const count = Number(raw);
+    if (!Number.isInteger(count) || count < 2) return 0;
+    return Math.min(count, 5000);
+  }
+
+  function demoSeed(search) {
+    if (!isDemo(search)) return "";
+    const raw = paramsFrom(search).get("seed");
+    return raw ? raw.trim() : "";
+  }
+
+  function demoQuery(search) {
+    const params = paramsFrom(search);
+    const out = new URLSearchParams();
+    out.set("demo", "1");
+    if (params.get("n")) out.set("n", params.get("n"));
+    if (params.get("seed")) out.set("seed", params.get("seed"));
+    return out.toString();
+  }
+
+  function randomSeed() {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    let hex = "";
+    for (let i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, "0");
+    return "demo-" + hex;
+  }
+
+  function generatedRoster(count) {
+    const rows = [];
+    for (let index = 0; index < count; index++) {
+      rows.push([
+        index % 2 === 0 ? "tiktok" : "youtube",
+        "test_" + String(index + 1).padStart(4, "0"),
+        (index * 17 + 3) % 20 + 1,
+      ]);
+    }
+    return rows;
   }
 
   function label(handle) {
@@ -52,10 +99,11 @@
     return "TEST " + bare.charAt(0).toUpperCase() + bare.slice(1);
   }
 
-  async function build(draw) {
+  async function prepare(draw, count) {
+    const rows = count > 0 ? generatedRoster(count) : ROSTER;
     const list = [];
-    for (let index = 0; index < ROSTER.length; index++) {
-      const row = ROSTER[index];
+    for (let index = 0; index < rows.length; index++) {
+      const row = rows[index];
       const platform = row[0];
       const handle = row[1];
       const weight = row[2];
@@ -71,21 +119,44 @@
     }
     list.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
     const canonical = draw.canonicalJson(list);
-    const snapshotHash = await draw.sha256Hex(canonical);
-    const commitHash = await draw.sha256Hex(SEED);
-    const drawn = await draw.drawWinners(list, SEED, snapshotHash, RESERVES);
     return {
       banner: BANNER,
-      seed: SEED,
       reserves: RESERVES,
       list: list,
-      snapshotHash: snapshotHash,
-      commitHash: commitHash,
+      snapshotHash: await draw.sha256Hex(canonical),
       participants: list.length,
       entries: list.reduce((sum, row) => sum + row.weight, 0),
       lives: new Set(list.map((row) => row.dates[0])).size,
+    };
+  }
+
+  async function drawWith(draw, prepared, seed) {
+    const used = String(seed || "");
+    const commitHash = await draw.sha256Hex(used);
+    const drawn = await draw.drawWinners(prepared.list, used, prepared.snapshotHash, RESERVES);
+    return {
+      seed: used,
+      commitHash: commitHash,
       winner: drawn.picks[0],
       reservePicks: drawn.picks.slice(1),
+    };
+  }
+
+  async function build(draw, count, seed) {
+    const prepared = await prepare(draw, count || 0);
+    const result = await drawWith(draw, prepared, seed ? String(seed) : SEED);
+    return {
+      banner: prepared.banner,
+      seed: result.seed,
+      reserves: prepared.reserves,
+      list: prepared.list,
+      snapshotHash: prepared.snapshotHash,
+      commitHash: result.commitHash,
+      participants: prepared.participants,
+      entries: prepared.entries,
+      lives: prepared.lives,
+      winner: result.winner,
+      reservePicks: result.reservePicks,
     };
   }
 
@@ -95,6 +166,13 @@
     RESERVES: RESERVES,
     ROSTER: ROSTER,
     isDemo: isDemo,
+    demoCount: demoCount,
+    demoSeed: demoSeed,
+    demoQuery: demoQuery,
+    randomSeed: randomSeed,
+    generatedRoster: generatedRoster,
+    prepare: prepare,
+    drawWith: drawWith,
     build: build,
   };
 });

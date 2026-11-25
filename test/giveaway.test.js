@@ -5,6 +5,7 @@ const os = require("os");
 const path = require("path");
 const draw = require("../giveaway/draw-math");
 const demo = require("../giveaway/demo");
+const wheel = require("../giveaway/wheel-layout");
 const { createMemoryRedis, createUpstashRedis, redisFromEnv } = require("../api/_lib/redis");
 const api = require("../api/_lib/giveaway");
 const match = require("../tools/giveaway-collector/match");
@@ -458,6 +459,51 @@ test("demo mode is local, labelled, and deterministic", async () => {
   const demoStart = page.indexOf("async function runDemo");
   const demoEnd = page.indexOf("const demo = window.GiveawayDemo");
   assert.equal(page.slice(demoStart, demoEnd).includes("fetch("), false);
+});
+
+test("demo seeds change the winner and large wheels stay readable", async () => {
+  assert.equal(demo.demoCount("?demo=1&n=300"), 300);
+  assert.equal(demo.demoCount("?demo=1&n=1000"), 1000);
+  assert.equal(demo.demoCount("?demo=1&n=99999"), 5000);
+  assert.equal(demo.demoCount("?demo=1"), 0);
+  assert.equal(demo.demoCount("?n=300"), 0);
+  assert.equal(demo.demoSeed("?demo=1&seed=abc"), "abc");
+  assert.equal(demo.demoSeed("?seed=abc"), "");
+  assert.notEqual(demo.randomSeed(), demo.randomSeed());
+  const generated = demo.generatedRoster(300);
+  assert.equal(generated.length, 300);
+  assert.match(generated[0][1], /^test_/);
+  assert.equal(generated[0][2] >= 1 && generated[0][2] <= 20, true);
+  const prepared = await demo.prepare(draw, 0);
+  const seeds = ["alpha-seed-0123456789", "beta-seed-0123456789", "gamma-seed-0123456789", "delta-seed-0123456789"];
+  const winners = new Set();
+  for (const seed of seeds) {
+    const once = await demo.drawWith(draw, prepared, seed);
+    const twice = await demo.drawWith(draw, prepared, seed);
+    assert.equal(once.winner.key, twice.winner.key);
+    assert.equal(once.commitHash, await draw.sha256Hex(seed));
+    winners.add(once.winner.key);
+  }
+  assert.ok(winners.size >= 2);
+
+  const heavy = [{ handle: "light", weight: 1 }, { handle: "heavy", weight: 20 }];
+  const ratio = wheel.layoutSlices(heavy);
+  assert.ok(Math.abs(ratio[1].arc / ratio[0].arc - 20) < 1e-9);
+  const crowd = [];
+  for (let index = 0; index < 1000; index++) crowd.push({ handle: "test_" + index, weight: 1 });
+  const packed = wheel.layoutSlices(crowd);
+  assert.equal(packed.length, 1000);
+  assert.equal(packed.filter((slice) => slice.label).length, 0);
+  const varied = wheel.layoutSlices(demo.ROSTER.map((row) => ({ handle: row[1], weight: row[2] })));
+  const labeled = varied.filter((slice) => slice.label);
+  assert.ok(labeled.length > 0);
+  assert.ok(labeled.length < varied.length);
+  for (let i = 0; i < labeled.length; i++) {
+    assert.ok(labeled[i].arc >= wheel.MIN_LABEL_ARC);
+    for (let j = i + 1; j < labeled.length; j++) {
+      assert.ok(wheel.angularDistance(labeled[i].mid, labeled[j].mid) >= wheel.MIN_GAP - 1e-9);
+    }
+  }
 });
 
 test("pages stay on the site theme and out of the homepage", () => {
