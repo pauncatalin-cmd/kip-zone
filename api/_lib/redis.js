@@ -233,18 +233,29 @@ function createUpstashRedis(url, token, fetchImpl) {
   };
 }
 
+function firstEnv(env, names) {
+  const source = env || {};
+  for (let i = 0; i < names.length; i++) {
+    const value = source[names[i]];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return "";
+}
+
 function redisFromEnv(env) {
-  const url = String((env && env.UPSTASH_REDIS_REST_URL) || "").trim();
-  const token = String((env && env.UPSTASH_REDIS_REST_TOKEN) || "").trim();
+  const url = firstEnv(env, ["UPSTASH_REDIS_REST_URL", "KV_REST_API_URL"]);
+  const token = firstEnv(env, ["UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_TOKEN"]);
   if (!url && !token) {
     return {
       ok: false,
       error: "not_configured",
-      message: "Evidența giveaway-ului nu este configurată. Lipsesc UPSTASH_REDIS_REST_URL și UPSTASH_REDIS_REST_TOKEN.",
+      message: "Evidența giveaway-ului nu este configurată. Lipsesc UPSTASH_REDIS_REST_URL sau KV_REST_API_URL, și UPSTASH_REDIS_REST_TOKEN sau KV_REST_API_TOKEN.",
     };
   }
   if (!url || !token) {
-    const missing = !url ? "UPSTASH_REDIS_REST_URL" : "UPSTASH_REDIS_REST_TOKEN";
+    const missing = !url
+      ? "UPSTASH_REDIS_REST_URL sau KV_REST_API_URL"
+      : "UPSTASH_REDIS_REST_TOKEN sau KV_REST_API_TOKEN";
     return {
       ok: false,
       error: "not_configured",
@@ -258,14 +269,14 @@ function redisFromEnv(env) {
     return {
       ok: false,
       error: "not_configured",
-      message: "UPSTASH_REDIS_REST_URL nu este un URL valid.",
+      message: "UPSTASH_REDIS_REST_URL sau KV_REST_API_URL nu este un URL valid.",
     };
   }
   if (parsed.protocol !== "https:") {
     return {
       ok: false,
       error: "not_configured",
-      message: "UPSTASH_REDIS_REST_URL trebuie să folosească HTTPS.",
+      message: "UPSTASH_REDIS_REST_URL sau KV_REST_API_URL trebuie să folosească HTTPS.",
     };
   }
   return { ok: true, client: createUpstashRedis(url, token) };
