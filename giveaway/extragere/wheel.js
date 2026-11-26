@@ -179,7 +179,7 @@
     (data.result.reserves || []).forEach((reserve, index) => {
       addRow("Rezerva " + (index + 1), personLine(reserve, reserve.entries));
     });
-    setText(note, "Animația este ilustrativă. Numele de sub roată este rezultatul oficial. Pe roată se scriu doar feliile destul de late.");
+    setText(note, "Roata e doar de spectacol. Numele de sub ea e rezultatul.");
   }
 
   async function verify(data) {
@@ -217,12 +217,12 @@
       const response = await fetch("/api/giveaway/draw?full=1", { headers: { Accept: "application/json" }, cache: "no-store" });
       const data = await response.json();
       if (response.status === 503 || data.configured === false) {
-        showAlert("Evidența giveaway-ului nu este configurată încă. Pagina poate fi citită, dar rezultatul apare după configurare și după extragerea live.");
-        setText(commitEl, "Neconfigurat");
-        setText(snapshotEl, "Neconfigurat");
+        showAlert("Rezultatul nu e gata încă. Revino pe 24 decembrie, la extragere.");
+        setText(commitEl, "Încă nu e publicat.");
+        setText(snapshotEl, "Încă nu e înghețată.");
         paint([], false);
         result.replaceChildren();
-        addRow("Câștigător", "Neconfigurat");
+        addRow("Câștigător", "Încă nu e extras.");
         return;
       }
       showAlert("");
@@ -245,7 +245,7 @@
     drawn.reservePicks.forEach((reserve, index) => {
       addRow("Rezerva " + (index + 1), personLine(reserve, reserve.weight));
     });
-    setText(note, "Simulare încheiată. Seed-ul de mai jos este cel folosit acum. Verificarea recalculează același câștigător.");
+    setText(note, "Gata simularea. Câștigătorul și rezervele sunt mai jos.");
     verify({
       snapshot: { list: pack.list, hash: pack.snapshotHash },
       result: {
@@ -274,9 +274,9 @@
     setText(snapshotEl, pack.snapshotHash);
     setText(seedEl, pinned ? pinned : "Un seed nou la fiecare pornire.");
     setText(note, pack.participants > 40
-      ? "Lista de test este înghețată (" + pack.participants + " conturi). Feliile sunt proporționale cu intrările. Numele se scriu pe roată doar dacă încap; altfel curg sub săgeată."
-      : "Lista de test este înghețată. Fiecare pornire folosește un seed nou, deci alt câștigător.");
-    if (pinned) setText(note, "Seed-ul este fixat în adresă, ca să poți relua același rezultat. " + (note.textContent || ""));
+      ? "Simulare cu " + pack.participants + " nume de test. Felia e mai mare dacă ai mai multe intrări. Numele lungi apar sub săgeată."
+      : "Simulare cu nume de test. La fiecare pornire iese alt câștigător.");
+    if (pinned) setText(note, "Simulare. Adresa reia același rezultat.");
     result.replaceChildren();
     addRow("Câștigător", "Încă nu este extras.");
     const query = demo.demoQuery(window.location.search);
@@ -295,7 +295,7 @@
       const marked = window.GiveawayWheel.layoutSlices(pack.list, drawn.winner.key);
       setText(commitEl, drawn.commitHash);
       setText(seedEl, drawn.seed);
-      setText(note, "Roata se învârte cu seed-ul de mai sus. Cine are mai multe intrări are o felie mai mare.");
+      setText(note, "Se învârte. Cine are mai multe intrări are o felie mai mare.");
       paint(marked, false);
       showReel("@" + marked[0].handle, false);
       spinSlices(marked, drawn.winner.key, (under) => {
@@ -303,7 +303,7 @@
       }, () => {
         finishDemo(pack, drawn, marked);
         button.disabled = false;
-        button.textContent = pinned ? "Repetă seed-ul" : "Pornește din nou";
+        button.textContent = pinned ? "Repetă același rezultat" : "Pornește din nou";
       });
     });
   }

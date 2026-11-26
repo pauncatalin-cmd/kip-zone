@@ -67,27 +67,27 @@
   function renderPhase(stats) {
     if (!phaseEl) return;
     if (!stats || stats.configured === false) {
-      phaseEl.textContent = "Evidența nu este configurată.";
+      phaseEl.textContent = "Numărătoarea nu e pornită încă.";
       return;
     }
     if (stats.revealed) {
-      phaseEl.textContent = "Extragerea a fost făcută. Rezultatul este pe pagina de extragere.";
+      phaseEl.textContent = "S-a tras. Rezultatul e pe pagina extragerii.";
       return;
     }
     if (stats.frozen) {
-      phaseEl.textContent = "Înscrierile sunt închise. Lista pentru extragere este înghețată.";
+      phaseEl.textContent = "Gata cu intrările. Urmează extragerea.";
       return;
     }
     if (stats.open) {
-      phaseEl.textContent = "Înscrierile sunt deschise. Scrie !gta6 în chat, o dată pe live.";
+      phaseEl.textContent = "Poți intra. Scrie !gta6 în chat, o dată pe live.";
       return;
     }
     const openAt = stats.window && Date.parse(stats.window.open);
     if (openAt && Date.now() < openAt) {
-      phaseEl.textContent = "Înscrierile încep la 26 noiembrie 2026, ora 00:00 (Europa/București).";
+      phaseEl.textContent = "Intrările încep pe 26 noiembrie 2026, la miezul nopții, ora Bucureștiului.";
       return;
     }
-    phaseEl.textContent = "Înscrierile sunt închise.";
+    phaseEl.textContent = "Intrările sunt închise.";
   }
 
   function renderBoard(payload) {
@@ -102,7 +102,7 @@
       const term = document.createElement("dt");
       term.textContent = "Clasament";
       const detail = document.createElement("dd");
-      detail.textContent = "Neconfigurat";
+      detail.textContent = "Încă nu e pornit";
       row.append(term, detail);
       list.append(row);
       board.append(list);
@@ -171,7 +171,7 @@
     try {
       const { response, data } = await readJson("/api/giveaway/search?q=" + encodeURIComponent(activeQuery));
       if (response.status === 503 || (data && data.configured === false)) {
-        renderSearch(null, "Căutarea pornește după configurarea evidenței.");
+        renderSearch(null, "Căutarea nu e pornită încă.");
         return;
       }
       if (!response.ok) {
@@ -200,7 +200,7 @@
       });
       configured = !missing;
       if (missing) {
-        showAlert("Evidența giveaway-ului nu este configurată încă. Poți citi regulamentul. Căutarea, clasamentul și numărătoarea pornesc după ce organizatorul leagă baza de date.");
+        showAlert("Numărătoarea nu e pornită încă. Regulile de mai jos rămân valabile.");
         setTotal("gw-participants", null);
         setTotal("gw-entries", null);
         setTotal("gw-lives", null);
@@ -212,7 +212,7 @@
         const stats = statsResult.data || {};
         const leaders = boardResult.data || {};
         if (!statsResult.response.ok || !boardResult.response.ok) {
-          showAlert("Evidența nu răspunde acum. Pagina încearcă din nou singură.");
+          showAlert("Nu pot citi lista acum. Mai încerc singur.");
         }
         setTotal("gw-participants", leaders.participants);
         setTotal("gw-entries", leaders.entries);
@@ -223,7 +223,7 @@
         if (commitEl) commitEl.textContent = hash || "Încă nu a fost publicat.";
       }
     } catch (error) {
-      showAlert("Evidența nu răspunde acum. Pagina încearcă din nou singură.");
+      showAlert("Nu pot citi lista acum. Mai încerc singur.");
     }
     if (activeQuery) refreshSearch();
   }
@@ -286,8 +286,8 @@
     setTotal("gw-lives", pack.lives);
     if (phaseEl) {
       phaseEl.textContent = pinned
-        ? "Simulare: lista de test este înghețată. Seed-ul din adresă reia același rezultat."
-        : "Simulare: lista de test este înghețată. Fiecare pornire a extragerii folosește un seed nou.";
+        ? "Simulare. Lista e de test. Adresa reia același rezultat."
+        : "Simulare. Lista e de test. La fiecare pornire iese alt câștigător.";
     }
     renderBoard({
       leaders: pack.list
@@ -295,7 +295,7 @@
         .sort((a, b) => b.entries - a.entries || a.handle.localeCompare(b.handle, "ro"))
         .slice(0, 20),
     });
-    if (commitEl) commitEl.textContent = pinned ? await window.GiveawayDraw.sha256Hex(pinned) : "Se calculează la fiecare pornire a simulării.";
+    if (commitEl) commitEl.textContent = pinned ? await window.GiveawayDraw.sha256Hex(pinned) : "Apare la pornirea simulării.";
     document.querySelectorAll('a[href="/giveaway/extragere/"]').forEach((link) => {
       link.href = "/giveaway/extragere/?" + window.GiveawayDemo.demoQuery(window.location.search);
     });

@@ -37,8 +37,8 @@
     <a class="back" href="/giveaway/">← Giveaway</a>
     <p class="eyebrow"><span class="status-light"></span> 24 decembrie · 20:00</p>
     <h1>Extragere GTA 6</h1>
-    <p class="lede">Premiul este un voucher de 100 € la alegere: PlayStation Store, Xbox, Steam sau Amazon. Nu se preschimbă în bani. Roata este o animație. Câștigătorul este cel calculat din seed și din hash-ul listei înghețate. Același calcul dă mereu același nume.</p>
-    <p id="gw-alert" class="gw-alert" hidden>Evidența giveaway-ului nu este configurată încă. Pagina poate fi citită, dar rezultatul apare după configurare și după extragerea live.</p>
+    <p class="lede">Premiul e un voucher de 100 €, la alegere: PlayStation Store, Xbox, Steam sau Amazon. Nu se dă în bani. Roata e doar de spectacol. Câștigătorul se alege la întâmplare, în live. Cine are mai multe intrări are mai multe șanse.</p>
+    <p id="gw-alert" class="gw-alert" hidden>Rezultatul nu e gata încă. Revino pe 24 decembrie, la extragere.</p>
     <div class="gw-stage">
       <div class="gw-pointer" aria-hidden="true"></div>
       <canvas id="gw-wheel" class="gw-wheel" width="640" height="640">Roata extragerii</canvas>
@@ -55,13 +55,17 @@
     <p id="gw-wheel-note" class="lede">Așteptăm extragerea din 24 decembrie, ora 20:00 (Europa/București).</p>
     <h2>Rezultat</h2>
     <div id="gw-result" class="specs" aria-live="polite"></div>
-    <h2>Verificare</h2>
-    <dl class="specs">
-      <div class="spec"><dt>Angajament</dt><dd id="gw-commit" class="gw-hash">Încă nu a fost publicat.</dd></div>
-      <div class="spec"><dt>Listă înghețată</dt><dd id="gw-snapshot" class="gw-hash">Lista nu este înghețată.</dd></div>
-      <div class="spec"><dt>Seed</dt><dd id="gw-seed" class="gw-hash">Ascuns până la extragere.</dd></div>
-      <div class="spec"><dt>În browser</dt><dd id="gw-check">Se verifică după ce există lista și seed-ul.</dd></div>
-    </dl>
+    <details class="gw-tech">
+      <summary>Detalii tehnice</summary>
+      <p class="lede">Doar dacă vrei să refaci tragerea. Nu trebuie să citești asta ca să intri.</p>
+      <dl class="specs">
+        <div class="spec"><dt>Angajament</dt><dd id="gw-commit" class="gw-hash">Încă nu e publicat.</dd></div>
+        <div class="spec"><dt>Lista înghețată</dt><dd id="gw-snapshot" class="gw-hash">Lista nu e înghețată.</dd></div>
+        <div class="spec"><dt>Seed</dt><dd id="gw-seed" class="gw-hash">Ascuns până la extragere.</dd></div>
+        <div class="spec"><dt>Verificare</dt><dd id="gw-check">Apare după extragere, când seed-ul e public.</dd></div>
+      </dl>
+      <p class="lede">Înainte de tragere public SHA-256 al unui seed secret. Lista de intrări se îngheață și primește și ea un hash. La extragere arăt seed-ul. Câștigătorul iese din SHA-256 repetat pe seed, hash-ul listei și un contor. Codul e în <a href="/giveaway/draw-math.js">draw-math.js</a>.</p>
+    </details>
     <p class="lede"><a class="back" href="/giveaway/#regulament">Regulamentul complet →</a></p>
     <p class="fineprint">© 2026 KIP. Gaming. Comunitate. Energie.</p>
   </div>

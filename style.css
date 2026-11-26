@@ -669,6 +669,28 @@ button:focus-visible {
   text-shadow: 0 0 18px #ffd34f66;
 }
 
+.gw-tech {
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 4px;
+}
+
+.gw-tech summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--gold);
+  font: 700 13px/1 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gw-tech summary:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
 .gw-demo-actions { margin: 12px 0 0; }
 
 .gw-demo-actions[hidden],
