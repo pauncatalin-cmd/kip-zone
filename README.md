@@ -2,7 +2,7 @@
 
 Paginile publice sunt `/giveaway/` și `/giveaway/extragere/`. Nu sunt în meniul de pe prima pagină și nu sunt în sitemap. Colectorul de chat stă în `tools/giveaway-collector/` și rulează pe PC-ul organizatorului.
 
-Extragerea este pe 24 decembrie 2026, ora 20:00, Europa/București. În Germania, iarna, asta este ora 19:00. Înscrierile țin de la 1 decembrie 2026, ora 00:00, până la ora extragerii. Comanda este exact `!gta6`.
+Premiul este un voucher digital de 100 €, la alegerea câștigătorului: PlayStation Store, Xbox, Steam sau Amazon. Nu se preschimbă în bani. Câștigătorul trebuie să fie pe live și să scrie în chat, de pe contul câștigător, în 3 minute de la anunț. Altfel trece la rezervă, cu același termen. Voucherul se trimite în privat după confirmarea din chat. Extragerea este pe 24 decembrie 2026, ora 20:00, Europa/București. În Germania, iarna, asta este ora 19:00. Înscrierile țin de la 26 noiembrie 2026, ora 00:00, până la ora extragerii. Comanda este exact `!gta6`.
 
 ## Variabile de mediu în Vercel
 

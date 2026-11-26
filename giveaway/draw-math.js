@@ -5,9 +5,9 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   root.GiveawayDraw = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
-  // 1 Dec 2026 00:00 and 24 Dec 2026 20:00, Europe/Bucharest (EET, UTC+2).
+  // 26 Nov 2026 00:00 and 24 Dec 2026 20:00, Europe/Bucharest (EET, UTC+2).
   const CAMPAIGN = {
-    open: "2026-12-01T00:00:00+02:00",
+    open: "2026-11-26T00:00:00+02:00",
     close: "2026-12-24T20:00:00+02:00",
     timeZone: "Europe/Bucharest",
     command: "!gta6",
