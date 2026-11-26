@@ -2,6 +2,8 @@
 
 Programul stă pe PC-ul tău cât timp ești live. Prinde comanda exactă `!gta6` din chatul TikTok (`@kipzone.ro`) și din chatul YouTube (`@kipanu`) și o trimite la kipzone.ro.
 
+Înscrierile sunt deschise de la 26 noiembrie 2026, ora 00:00, până la 24 decembrie 2026, ora 20:00 (Europa/București). Premiul este un voucher digital de 100 €, la alegere: PlayStation Store, Xbox, Steam sau Amazon. Nu se preschimbă în bani.
+
 O singură intrare per cont per live. Dacă trimiți de două ori aceeași persoană, serverul o numără o dată. Conturile de TikTok și YouTube sunt separate. Programul nu citește data creării contului, deci regula de 7 zile se aplică doar dacă acea dată este trimisă.
 
 ## Ce îți trebuie

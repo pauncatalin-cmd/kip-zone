@@ -84,7 +84,7 @@
     }
     const openAt = stats.window && Date.parse(stats.window.open);
     if (openAt && Date.now() < openAt) {
-      phaseEl.textContent = "Înscrierile încep la 1 decembrie 2026, ora 00:00 (Europa/București).";
+      phaseEl.textContent = "Înscrierile încep la 26 noiembrie 2026, ora 00:00 (Europa/București).";
       return;
     }
     phaseEl.textContent = "Înscrierile sunt închise.";

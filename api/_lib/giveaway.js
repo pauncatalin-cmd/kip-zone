@@ -237,7 +237,7 @@ function validateEntry(body, now) {
   const openMs = Date.parse(draw.CAMPAIGN.open);
   const closeMs = Date.parse(draw.CAMPAIGN.close);
   if (ts < openMs || ts >= closeMs) {
-    return fail(403, "window", "Mesajul este în afara perioadei de înscriere (1–24 decembrie 2026, până la ora 20:00, Europa/București).");
+    return fail(403, "window", "Mesajul este în afara perioadei de înscriere (26 noiembrie 2026, ora 00:00 – 24 decembrie 2026, ora 20:00, Europa/București).");
   }
   let accountCreatedAt = null;
   if (body.accountCreatedAt != null && body.accountCreatedAt !== "") {

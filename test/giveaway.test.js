@@ -78,7 +78,7 @@ async function postEntryApi(options, body) {
 }
 
 test("campaign instants and sha256 stay fixed", async () => {
-  assert.equal(OPEN, Date.UTC(2026, 10, 30, 22, 0, 0));
+  assert.equal(OPEN, Date.UTC(2026, 10, 25, 22, 0, 0));
   assert.equal(CLOSE, Date.UTC(2026, 11, 24, 18, 0, 0));
   assert.equal(await draw.sha256Hex(""), "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
   assert.equal(await draw.sha256Hex("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
